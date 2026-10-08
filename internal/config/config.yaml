@@ -1,0 +1,7 @@
+node:
+  port: 9000
+  read_timeout: 5s
+  write_timeout: 5s
+protocol:
+  version: 1
+  max_frame_payload: 65536
