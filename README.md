@@ -1,70 +1,78 @@
 # p2p-overlay
 
-Защищённая оверлейная P2P-сеть на Go 1.27 
-Этап 1 — транспорт и кадрирование.
+Защищённая децентрализованная оверлейная сеть на основе пиринговых протоколов и Kademlia DHT. 
 
-## Сборка
+## Язык и библиотеки
+- Go 1.27.1 (generic methods, encoding/json/v2, net, crypto/tls).
+- github.com/vmihailenco/msgpack/v5 — сериализация.
+- gopkg.in/yaml.v3 — конфигурация.
 
-```
+## 1. Сборка и тестирование
+
+```bash
+# Сборка бинарника
 go build -o node.exe ./cmd/node
-```
 
-## Тесты
-
-```
+# Запуск всех тестов
 go vet ./...
 go test ./...
 ```
 
-## Запуск узла
+## 2. Запуск узла
 
-```
-go run ./cmd/node
-```
-
-Узел слушает порт из `internal/config/config.yaml` (по умолчанию 9000) и отвечает `PONG` на входящие кадры.
-
-## Структура
-
-```
-cmd/node/          — точка входа
-internal/config/   — YAML-конфигурация
-internal/protocol/ — 24-байтовый кадр, потоковый декодер
-internal/transport/— TCP-сервер
-internal/node/     — обработка соединений
-tests/             — unit и negative-тесты
-scripts/           — сравнение сериализации
+Для запуска одного узла используйте конфигурационный файл:
+```bash
+./node.exe configs/star.yaml
 ```
 
-## Формат кадра
+При первом запуске узел создаст Ed25519-ключи в директории, указанной в `state_dir`, и вычислит `NodeID = SHA-256(public_key)`. При повторном запуске из этой же директории идентичность сохраняется.
 
-| Поле           |  Размер | Порядок    |
-| -------------- | ------: | ---------- |
-| version        |       1 | —          |
-| type           |       1 | —          |
-| flags          |       2 | big-endian |
-| request_id     |      16 | —          |
-| payload_length |       4 | big-endian |
-| payload        | ≤ 65536 | —          |
+## 3. Реализованный функционал
 
-## Сериализация
+**Транспорт и протокол**
+- TCP-транспорт с тайм-аутами.
+- 24-байтовый заголовок кадра (`version`, `type`, `flags`, `request_id`, `payload_length`).
+- Потоковый декодер, обрабатывающий частичные чтения и склеенные кадры.
+- Защита от переполнения буфера (`MAX_FRAME_PAYLOAD = 65536`).
+- Сериализация данных: MessagePack.
 
-Основная — MessagePack. Сравнение с JSON:
+**Идентичность и DHT**
+- Долговременные Ed25519-ключи и детерминированный `NodeID`.
+- XOR-метрика для вычисления расстояния между узлами.
+- Таблица маршрутизации (k-buckets, `K_BUCKET_SIZE=3`) с LRU-политикой вытеснения (проверка `PING` перед заменой).
+- RPC-запросы: `PING`, `PONG`, `FIND_NODE`.
+- Итеративный алгоритм поиска (Lookup) с параллелизмом `ALPHA=3`.
+- Bootstrap-схемы: «звезда» (`star`) и «кольцо» (`ring`).
 
+## 4. Структура проекта
+
+```text
+cmd/node/          — точка входа в приложение
+configs/           — готовые конфигурации для ручного запуска
+internal/config/   — парсинг YAML
+internal/protocol/ — кадрирование, парсинг и сериализация (MsgPack)
+internal/identity/ — Ed25519, генерация и загрузка ключей, NodeID
+internal/nodeid/   — тип идентификатора и XOR-метрики
+internal/dht/      — k-buckets, таблица маршрутизации, итеративный lookup
+internal/rpc/      — обработка входящих соединений, PING/FIND_NODE
+internal/node/     — связывание компонентов в единый узел
+scripts/           — скрипты для автоматизированного запуска сети
+results/           — сохранённые артефакты прогонов (CSV, логи)
+tests/             — unit- и integration-тесты
 ```
-go run ./scripts/compare_serialization.go
+
+## 5. Автоматизированный запуск сети
+
+Для проверки работы DHT и сходимости сети предусмотрены PowerShell-скрипты:
+
+```powershell
+# Запуск сети из 5 узлов в топологии "Звезда"
+.\scripts\bootstrap_star.ps1
+
+# Запуск сети в топологии "Кольцо"
+.\scripts\bootstrap_ring.ps1
+
+# Очистка зависших процессов и логов
+.\scripts\clean.ps1
 ```
-
-## Конфигурация
-
-`internal/config/config.yaml`:
-
-```yaml
-node:
-  port: 9000
-  read_timeout: 5s
-  write_timeout: 5s
-protocol:
-  version: 1
-  max_frame_payload: 65536
-```
+Логи работы узлов сохраняются в директорию `run/`.

@@ -1,0 +1,20 @@
+node:
+  id: auto
+  port: 9000
+  state_dir: ./state/node-0
+  read_timeout: 10s
+  write_timeout: 10s
+protocol:
+  version: 1
+  max_frame_payload: 65536
+  codec: msgpack
+dht:
+  k: 3
+  alpha: 3
+  replication: 3
+  ttl_seconds: 180
+  refresh_interval: 30s
+  republish_interval: 60s
+bootstrap:
+  scheme: star
+  peers: []

@@ -1,0 +1,21 @@
+node:
+  id: auto
+  port: 9100
+  state_dir: ./state/node-ring-0
+  read_timeout: 10s
+  write_timeout: 10s
+protocol:
+  version: 1
+  max_frame_payload: 65536
+  codec: msgpack
+dht:
+  k: 3
+  alpha: 3
+  replication: 3
+  ttl_seconds: 180
+  refresh_interval: 30s
+  republish_interval: 60s
+bootstrap:
+  scheme: ring
+  peers:
+    - 127.0.0.1:9101

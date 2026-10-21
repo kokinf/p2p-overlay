@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"os/signal"
 	"syscall"
 
@@ -11,21 +12,21 @@ import (
 )
 
 func main() {
-	cfg, err := config.Load("internal/config/config.yaml")
+	path := "internal/config/config.yaml"
+	if len(os.Args) > 1 {
+		path = os.Args[1]
+	}
+	cfg, err := config.Load(path)
 	if err != nil {
 		log.Fatal(err)
 	}
-	n, err := node.NewNode("node-1", cfg.Node.Port)
+	n, err := node.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
-	go func() {
-		if err := n.Run(ctx); err != nil {
-			log.Printf("node stopped: %v", err)
-		}
-	}()
-	<-ctx.Done()
-	_ = n.Stop()
+	if err := n.Run(ctx); err != nil {
+		log.Fatal(err)
+	}
 }

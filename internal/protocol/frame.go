@@ -31,6 +31,8 @@ const (
 	FrameAppMessage
 	FrameAppAck
 	FrameError
+	FrameHello
+	FrameHelloOK
 )
 
 type Frame struct {
