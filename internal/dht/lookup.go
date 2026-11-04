@@ -155,3 +155,115 @@ func isTimeout(err error) bool {
 	}
 	return false
 }
+
+type FindValueResult struct {
+	Record   []byte
+	Contacts []*Contact
+	Err      error
+}
+
+type FindValueFunc func(ctx context.Context, c *Contact, key nodeid.ID) FindValueResult
+
+func IterativeLookupValue(ctx context.Context, rt *RoutingTable, key nodeid.ID, find FindValueFunc) ([]byte, *LookupResult) {
+	started := time.Now()
+	res := &LookupResult{Target: key, Started: started}
+
+	queried := make(map[nodeid.ID]bool)
+	queried[rt.Self()] = true
+
+	var shortlist []*Contact
+	shortlist = append(shortlist, rt.Closest(key, rt.K())...)
+
+	for {
+		sort.Slice(shortlist, func(i, j int) bool {
+			return nodeid.Less(shortlist[i].ID, shortlist[j].ID, key)
+		})
+
+		var batch []*Contact
+		for _, c := range shortlist {
+			if len(batch) >= Alpha {
+				break
+			}
+			if queried[c.ID] {
+				continue
+			}
+			batch = append(batch, c)
+		}
+		if len(batch) == 0 {
+			break
+		}
+
+		trace := IterationTrace{Index: len(res.Trace)}
+		ch := make(chan struct {
+			contact *Contact
+			res     FindValueResult
+		}, len(batch))
+
+		for _, c := range batch {
+			queried[c.ID] = true
+			trace.Queried = append(trace.Queried, c.ID.String())
+			go func(c *Contact) {
+				r := find(ctx, c, key)
+				ch <- struct {
+					contact *Contact
+					res     FindValueResult
+				}{contact: c, res: r}
+			}(c)
+		}
+
+		var foundRecord []byte
+
+		for range batch {
+			r := <-ch
+			res.RPCs++
+
+			if r.res.Err != nil {
+				res.Errors++
+				if isTimeout(r.res.Err) {
+					res.Timeouts++
+					trace.Timeouts++
+				}
+				trace.Errors++
+				shortlist = removeContact(shortlist, r.contact.ID)
+				continue
+			}
+
+			trace.Replies++
+			rt.Touch(r.contact.ID)
+
+			if len(r.res.Record) > 0 && foundRecord == nil {
+				foundRecord = r.res.Record
+			}
+
+			for _, nc := range r.res.Contacts {
+				if nc.ID == rt.Self() {
+					continue
+				}
+				if !containsContact(shortlist, nc.ID) {
+					shortlist = append(shortlist, nc)
+				}
+			}
+		}
+
+		res.Trace = append(res.Trace, trace)
+
+		if foundRecord != nil {
+			res.Finished = time.Now()
+			res.DurationMS = res.Finished.Sub(res.Started).Milliseconds()
+			res.Iterations = len(res.Trace)
+			return foundRecord, res
+		}
+
+		sort.Slice(shortlist, func(i, j int) bool {
+			return nodeid.Less(shortlist[i].ID, shortlist[j].ID, key)
+		})
+		if len(shortlist) > 2*rt.K() {
+			shortlist = shortlist[:2*rt.K()]
+		}
+	}
+
+	res.Finished = time.Now()
+	res.DurationMS = res.Finished.Sub(res.Started).Milliseconds()
+	res.Iterations = len(res.Trace)
+	return nil, res
+}
