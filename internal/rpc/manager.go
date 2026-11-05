@@ -3,6 +3,7 @@ package rpc
 import (
 	"context"
 	"crypto/rand"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net"
@@ -22,32 +23,50 @@ type Manager struct {
 	codec   serialization.Codec
 	timeout time.Duration
 	handler Handler
+	tlsCert tls.Certificate
 
-	mu      sync.Mutex
-	conns   map[nodeid.ID]*conn
-	pending map[[16]byte]chan *protocol.Frame
+	mu          sync.Mutex
+	conns       map[nodeid.ID]*conn
+	pending     map[[16]byte]chan *protocol.Frame
+	replayCache map[[16]byte]time.Time
 }
 
 func NewManager(id *identity.Identity, codec serialization.Codec, handler Handler, timeout time.Duration) *Manager {
-	return &Manager{
-		id:      id,
-		codec:   codec,
-		timeout: timeout,
-		handler: handler,
-		conns:   make(map[nodeid.ID]*conn),
-		pending: make(map[[16]byte]chan *protocol.Frame),
+	cert, err := id.GenerateTLSCertificate()
+	if err != nil {
+		log.Fatalf("failed to generate TLS cert: %v", err)
 	}
+	m := &Manager{
+		id:          id,
+		codec:       codec,
+		timeout:     timeout,
+		handler:     handler,
+		tlsCert:     cert,
+		conns:       make(map[nodeid.ID]*conn),
+		pending:     make(map[[16]byte]chan *protocol.Frame),
+		replayCache: make(map[[16]byte]time.Time),
+	}
+	go m.cleanupReplayCache()
+	return m
 }
 
 func (m *Manager) ID() nodeid.ID { return m.id.NodeID() }
 
 func (m *Manager) Serve(ctx context.Context, ln net.Listener) error {
+	config := &tls.Config{
+		Certificates: []tls.Certificate{m.tlsCert},
+		ClientAuth:   tls.RequireAnyClientCert,
+		MinVersion:   tls.VersionTLS13,
+	}
+
+	tlsListener := tls.NewListener(ln, config)
+
 	go func() {
 		<-ctx.Done()
-		_ = ln.Close()
+		_ = tlsListener.Close()
 	}()
 	for {
-		nc, err := ln.Accept()
+		nc, err := tlsListener.Accept()
 		if err != nil {
 			select {
 			case <-ctx.Done():
@@ -61,27 +80,49 @@ func (m *Manager) Serve(ctx context.Context, ln net.Listener) error {
 }
 
 func (m *Manager) serveConn(nc net.Conn) {
-	c := newConn(nc)
-	if err := m.serverHandshake(c); err != nil {
-		log.Printf("rpc: server handshake: %v", err)
-		c.close()
+	tlsConn, ok := nc.(*tls.Conn)
+	if !ok {
+		_ = nc.Close()
 		return
 	}
+
+	if err := tlsConn.Handshake(); err != nil {
+		log.Printf("rpc: tls handshake failed: %v", err)
+		_ = nc.Close()
+		return
+	}
+
+	state := tlsConn.ConnectionState()
+	if len(state.PeerCertificates) == 0 {
+		_ = nc.Close()
+		return
+	}
+	remoteID, err := identity.ExtractNodeIDFromCert(state.PeerCertificates[0])
+	if err != nil {
+		log.Printf("rpc: invalid client cert: %v", err)
+		_ = nc.Close()
+		return
+	}
+
+	c := newConn(tlsConn)
+	c.remote = remoteID
+
 	m.mu.Lock()
-	if existing, ok := m.conns[c.remote]; ok {
-		m.mu.Unlock()
-		_ = existing
-		c.close()
-		return
+	if existing, ok := m.conns[remoteID]; ok {
+		existing.close()
 	}
-	m.conns[c.remote] = c
+	m.conns[remoteID] = c
 	m.mu.Unlock()
+
 	defer func() {
 		m.mu.Lock()
-		delete(m.conns, c.remote)
+		if m.conns[remoteID] == c {
+			delete(m.conns, remoteID)
+		}
 		m.mu.Unlock()
 		c.close()
 	}()
+
 	m.readLoop(c)
 }
 
@@ -112,6 +153,14 @@ func (m *Manager) deliver(f *protocol.Frame) {
 }
 
 func (m *Manager) handleRequest(c *conn, f *protocol.Frame) {
+	m.mu.Lock()
+	if _, exists := m.replayCache[f.RequestID]; exists {
+		m.mu.Unlock()
+		return
+	}
+	m.replayCache[f.RequestID] = time.Now()
+	m.mu.Unlock()
+
 	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
 	defer cancel()
 	resp, err := m.handler(ctx, c.remote, f)
@@ -133,6 +182,20 @@ func (m *Manager) handleRequest(c *conn, f *protocol.Frame) {
 		resp.Type = f.Type + 1
 	}
 	_ = c.write(resp)
+}
+
+func (m *Manager) cleanupReplayCache() {
+	ticker := time.NewTicker(1 * time.Minute)
+	for range ticker.C {
+		m.mu.Lock()
+		now := time.Now()
+		for id, t := range m.replayCache {
+			if now.Sub(t) > 2*time.Minute {
+				delete(m.replayCache, id)
+			}
+		}
+		m.mu.Unlock()
+	}
 }
 
 func (m *Manager) Call(ctx context.Context, remote nodeid.ID, addr string, req *protocol.Frame) (*protocol.Frame, error) {
@@ -174,27 +237,47 @@ func (m *Manager) Call(ctx context.Context, remote nodeid.ID, addr string, req *
 }
 
 func (m *Manager) DialUnverified(ctx context.Context, addr string) (nodeid.ID, error) {
+	config := &tls.Config{
+		Certificates:       []tls.Certificate{m.tlsCert},
+		InsecureSkipVerify: true,
+		MinVersion:         tls.VersionTLS13,
+	}
 	var d net.Dialer
 	nc, err := d.DialContext(ctx, "tcp", addr)
 	if err != nil {
 		return nodeid.ID{}, err
 	}
-	c := newConn(nc)
-	if err := m.clientHandshake(c, nodeid.ID{}, false); err != nil {
-		c.close()
+	tlsConn := tls.Client(nc, config)
+	if err := tlsConn.HandshakeContext(ctx); err != nil {
+		_ = nc.Close()
 		return nodeid.ID{}, err
 	}
-	m.mu.Lock()
-	if existing, ok := m.conns[c.remote]; ok {
-		m.mu.Unlock()
-		_ = existing
-		c.close()
-		return c.remote, nil
+
+	state := tlsConn.ConnectionState()
+	if len(state.PeerCertificates) == 0 {
+		_ = nc.Close()
+		return nodeid.ID{}, fmt.Errorf("no cert provided")
 	}
-	m.conns[c.remote] = c
+	remoteID, err := identity.ExtractNodeIDFromCert(state.PeerCertificates[0])
+	if err != nil {
+		_ = nc.Close()
+		return nodeid.ID{}, err
+	}
+
+	c := newConn(tlsConn)
+	c.remote = remoteID
+
+	m.mu.Lock()
+	if _, ok := m.conns[remoteID]; ok {
+		m.mu.Unlock()
+		_ = nc.Close()
+		return remoteID, nil
+	}
+	m.conns[remoteID] = c
 	m.mu.Unlock()
+
 	go m.readLoop(c)
-	return c.remote, nil
+	return remoteID, nil
 }
 
 func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) (*conn, error) {
@@ -205,25 +288,47 @@ func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) 
 	}
 	m.mu.Unlock()
 
+	config := &tls.Config{
+		Certificates:       []tls.Certificate{m.tlsCert},
+		InsecureSkipVerify: true,
+		MinVersion:         tls.VersionTLS13,
+	}
+
 	var d net.Dialer
 	nc, err := d.DialContext(ctx, "tcp", addr)
 	if err != nil {
 		return nil, err
 	}
-	c := newConn(nc)
-	if err := m.clientHandshake(c, remote, true); err != nil {
-		c.close()
+
+	tlsConn := tls.Client(nc, config)
+	if err := tlsConn.HandshakeContext(ctx); err != nil {
+		_ = nc.Close()
 		return nil, err
 	}
+
+	state := tlsConn.ConnectionState()
+	if len(state.PeerCertificates) == 0 {
+		_ = nc.Close()
+		return nil, fmt.Errorf("no cert provided")
+	}
+	actualID, err := identity.ExtractNodeIDFromCert(state.PeerCertificates[0])
+	if err != nil || actualID != remote {
+		_ = nc.Close()
+		return nil, fmt.Errorf("remote id mismatch: got %s, want %s", actualID, remote)
+	}
+
+	c := newConn(tlsConn)
+	c.remote = remote
+
 	m.mu.Lock()
 	if existing, ok := m.conns[remote]; ok {
 		m.mu.Unlock()
-		_ = existing
-		c.close()
+		_ = nc.Close()
 		return existing, nil
 	}
 	m.conns[remote] = c
 	m.mu.Unlock()
+
 	go m.readLoop(c)
 	return c, nil
 }
