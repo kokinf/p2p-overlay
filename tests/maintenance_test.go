@@ -51,7 +51,7 @@ func TestAliasResolution(t *testing.T) {
 	rec1 := &records.NodeRecord{
 		NodeID:    id1.NodeID(),
 		PublicKey: id1.PublicKey,
-		Addresses: []string{"addr1"},
+		Addresses: []string{"127.0.0.1:9001"},
 		Alias:     normAlias,
 		Seq:       1,
 		IssuedAt:  time.Now().Unix(),
@@ -62,7 +62,7 @@ func TestAliasResolution(t *testing.T) {
 	rec2 := &records.NodeRecord{
 		NodeID:    id2.NodeID(),
 		PublicKey: id2.PublicKey,
-		Addresses: []string{"addr2"},
+		Addresses: []string{"127.0.0.1:9002"},
 		Alias:     normAlias,
 		Seq:       2,
 		IssuedAt:  time.Now().Unix(),

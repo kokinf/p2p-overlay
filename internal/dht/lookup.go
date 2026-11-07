@@ -23,16 +23,17 @@ type IterationTrace struct {
 }
 
 type LookupResult struct {
-	Target     nodeid.ID        `json:"target"`
-	Closest    []string         `json:"closest"`
-	RPCs       int              `json:"rpcs"`
-	Iterations int              `json:"iterations"`
-	Timeouts   int              `json:"timeouts"`
-	Errors     int              `json:"errors"`
-	Trace      []IterationTrace `json:"trace"`
-	Started    time.Time        `json:"started"`
-	Finished   time.Time        `json:"finished"`
-	DurationMS int64            `json:"duration_ms"`
+	Target         nodeid.ID        `json:"target"`
+	InitialClosest []string         `json:"initial_closest"`
+	Closest        []string         `json:"closest"`
+	RPCs           int              `json:"rpcs"`
+	Iterations     int              `json:"iterations"`
+	Timeouts       int              `json:"timeouts"`
+	Errors         int              `json:"errors"`
+	Trace          []IterationTrace `json:"trace"`
+	Started        time.Time        `json:"started"`
+	Finished       time.Time        `json:"finished"`
+	DurationMS     int64            `json:"duration_ms"`
 }
 
 func IterativeLookup(ctx context.Context, rt *RoutingTable, target nodeid.ID, find FindNodeFunc) *LookupResult {
@@ -44,6 +45,9 @@ func IterativeLookup(ctx context.Context, rt *RoutingTable, target nodeid.ID, fi
 
 	var shortlist []*Contact
 	shortlist = append(shortlist, rt.Closest(target, rt.K())...)
+	for _, c := range shortlist {
+		res.InitialClosest = append(res.InitialClosest, c.ID.String())
+	}
 
 	for {
 		sort.Slice(shortlist, func(i, j int) bool {
@@ -173,6 +177,9 @@ func IterativeLookupValue(ctx context.Context, rt *RoutingTable, key nodeid.ID, 
 
 	var shortlist []*Contact
 	shortlist = append(shortlist, rt.Closest(key, rt.K())...)
+	for _, c := range shortlist {
+		res.InitialClosest = append(res.InitialClosest, c.ID.String())
+	}
 
 	for {
 		sort.Slice(shortlist, func(i, j int) bool {

@@ -21,6 +21,14 @@ func FromBytes(b []byte) (ID, error) {
 	return id, nil
 }
 
+func ParseHex(s string) (ID, error) {
+	b, err := hex.DecodeString(s)
+	if err != nil {
+		return ID{}, err
+	}
+	return FromBytes(b)
+}
+
 func MustFromHex(s string) ID {
 	b, err := hex.DecodeString(s)
 	if err != nil {

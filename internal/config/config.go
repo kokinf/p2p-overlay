@@ -35,11 +35,19 @@ type BootstrapConfig struct {
 	Peers  []string `yaml:"peers"`
 }
 
+type ExperimentConfig struct {
+	Enabled   bool          `yaml:"enabled"`
+	Delay     time.Duration `yaml:"delay"`
+	Targets   []string      `yaml:"targets"`
+	OutputDir string        `yaml:"output_dir"`
+}
+
 type Config struct {
-	Node      NodeConfig      `yaml:"node"`
-	Protocol  ProtocolConfig  `yaml:"protocol"`
-	DHT       DHTConfig       `yaml:"dht"`
-	Bootstrap BootstrapConfig `yaml:"bootstrap"`
+	Node       NodeConfig       `yaml:"node"`
+	Protocol   ProtocolConfig   `yaml:"protocol"`
+	DHT        DHTConfig        `yaml:"dht"`
+	Bootstrap  BootstrapConfig  `yaml:"bootstrap"`
+	Experiment ExperimentConfig `yaml:"experiment"`
 }
 
 func Load(path string) (*Config, error) {

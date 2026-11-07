@@ -16,35 +16,49 @@ import (
 	"p2p-overlay/internal/protocol/serialization"
 )
 
+const maxConcurrentHandlers = 64
+
 type Handler func(ctx context.Context, remote nodeid.ID, req *protocol.Frame) (*protocol.Frame, error)
 
 type Manager struct {
-	id      *identity.Identity
-	codec   serialization.Codec
-	timeout time.Duration
-	handler Handler
-	tlsCert tls.Certificate
+	id           *identity.Identity
+	codec        serialization.Codec
+	timeout      time.Duration
+	writeTimeout time.Duration
+	handler      Handler
+	tlsCert      tls.Certificate
 
 	mu          sync.Mutex
 	conns       map[nodeid.ID]*conn
 	pending     map[[16]byte]chan *protocol.Frame
 	replayCache map[[16]byte]time.Time
+	sem         chan struct{}
+
+	closeOnce sync.Once
+	done      chan struct{}
 }
 
 func NewManager(id *identity.Identity, codec serialization.Codec, handler Handler, timeout time.Duration) *Manager {
+	return NewManagerWithWriteTimeout(id, codec, handler, timeout, 10*time.Second)
+}
+
+func NewManagerWithWriteTimeout(id *identity.Identity, codec serialization.Codec, handler Handler, readTimeout, writeTimeout time.Duration) *Manager {
 	cert, err := id.GenerateTLSCertificate()
 	if err != nil {
 		log.Fatalf("failed to generate TLS cert: %v", err)
 	}
 	m := &Manager{
-		id:          id,
-		codec:       codec,
-		timeout:     timeout,
-		handler:     handler,
-		tlsCert:     cert,
-		conns:       make(map[nodeid.ID]*conn),
-		pending:     make(map[[16]byte]chan *protocol.Frame),
-		replayCache: make(map[[16]byte]time.Time),
+		id:           id,
+		codec:        codec,
+		timeout:      readTimeout,
+		writeTimeout: writeTimeout,
+		handler:      handler,
+		tlsCert:      cert,
+		conns:        make(map[nodeid.ID]*conn),
+		pending:      make(map[[16]byte]chan *protocol.Frame),
+		replayCache:  make(map[[16]byte]time.Time),
+		sem:          make(chan struct{}, maxConcurrentHandlers),
+		done:         make(chan struct{}),
 	}
 	go m.cleanupReplayCache()
 	return m
@@ -104,7 +118,7 @@ func (m *Manager) serveConn(nc net.Conn) {
 		return
 	}
 
-	c := newConn(tlsConn)
+	c := newConn(tlsConn, m.writeTimeout)
 	c.remote = remoteID
 
 	m.mu.Lock()
@@ -148,7 +162,10 @@ func (m *Manager) deliver(f *protocol.Frame) {
 	}
 	m.mu.Unlock()
 	if ok {
-		ch <- f
+		select {
+		case ch <- f:
+		default:
+		}
 	}
 }
 
@@ -156,10 +173,18 @@ func (m *Manager) handleRequest(c *conn, f *protocol.Frame) {
 	m.mu.Lock()
 	if _, exists := m.replayCache[f.RequestID]; exists {
 		m.mu.Unlock()
+		log.Printf("rpc: replay detected for request_id %x from %s", f.RequestID[:4], c.remote)
 		return
 	}
 	m.replayCache[f.RequestID] = time.Now()
 	m.mu.Unlock()
+
+	select {
+	case m.sem <- struct{}{}:
+	case <-m.done:
+		return
+	}
+	defer func() { <-m.sem }()
 
 	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
 	defer cancel()
@@ -186,15 +211,21 @@ func (m *Manager) handleRequest(c *conn, f *protocol.Frame) {
 
 func (m *Manager) cleanupReplayCache() {
 	ticker := time.NewTicker(1 * time.Minute)
-	for range ticker.C {
-		m.mu.Lock()
-		now := time.Now()
-		for id, t := range m.replayCache {
-			if now.Sub(t) > 2*time.Minute {
-				delete(m.replayCache, id)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-m.done:
+			return
+		case <-ticker.C:
+			m.mu.Lock()
+			now := time.Now()
+			for id, t := range m.replayCache {
+				if now.Sub(t) > 2*time.Minute {
+					delete(m.replayCache, id)
+				}
 			}
+			m.mu.Unlock()
 		}
-		m.mu.Unlock()
 	}
 }
 
@@ -264,7 +295,7 @@ func (m *Manager) DialUnverified(ctx context.Context, addr string) (nodeid.ID, e
 		return nodeid.ID{}, err
 	}
 
-	c := newConn(tlsConn)
+	c := newConn(tlsConn, m.writeTimeout)
 	c.remote = remoteID
 
 	m.mu.Lock()
@@ -317,7 +348,7 @@ func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) 
 		return nil, fmt.Errorf("remote id mismatch: got %s, want %s", actualID, remote)
 	}
 
-	c := newConn(tlsConn)
+	c := newConn(tlsConn, m.writeTimeout)
 	c.remote = remote
 
 	m.mu.Lock()
@@ -334,6 +365,7 @@ func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) 
 }
 
 func (m *Manager) Close() {
+	m.closeOnce.Do(func() { close(m.done) })
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	for _, c := range m.conns {
@@ -351,6 +383,7 @@ func isResponse(t protocol.FrameType) bool {
 		protocol.FrameTunnelBuildOK,
 		protocol.FrameTunnelBuildFail,
 		protocol.FrameTunnelAck,
+		protocol.FrameTunnelCloseOk,
 		protocol.FrameAppAck,
 		protocol.FrameHelloOK,
 		protocol.FrameError:

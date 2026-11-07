@@ -28,6 +28,7 @@ const (
 	FrameTunnelData
 	FrameTunnelAck
 	FrameTunnelClose
+	FrameTunnelCloseOk
 	FrameAppMessage
 	FrameAppAck
 	FrameError

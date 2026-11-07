@@ -10,20 +10,28 @@ import (
 )
 
 type conn struct {
-	netConn net.Conn
-	dec     *protocol.StreamDecoder
-	remote  nodeid.ID
-	writeMu sync.Mutex
+	netConn      net.Conn
+	dec          *protocol.StreamDecoder
+	remote       nodeid.ID
+	writeMu      sync.Mutex
+	writeTimeout time.Duration
 }
 
-func newConn(nc net.Conn) *conn {
-	return &conn{netConn: nc, dec: protocol.NewStreamDecoder(nc)}
+func newConn(nc net.Conn, writeTimeout time.Duration) *conn {
+	if writeTimeout <= 0 {
+		writeTimeout = 10 * time.Second
+	}
+	return &conn{
+		netConn:      nc,
+		dec:          protocol.NewStreamDecoder(nc),
+		writeTimeout: writeTimeout,
+	}
 }
 
 func (c *conn) write(f *protocol.Frame) error {
 	c.writeMu.Lock()
 	defer c.writeMu.Unlock()
-	_ = c.netConn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+	_ = c.netConn.SetWriteDeadline(time.Now().Add(c.writeTimeout))
 	return f.Encode(c.netConn)
 }
 

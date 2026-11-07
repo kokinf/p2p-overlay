@@ -3,7 +3,6 @@ package node
 import (
 	"context"
 	"crypto/rand"
-	"crypto/sha256"
 	"errors"
 	"fmt"
 	"log"
@@ -30,7 +29,8 @@ type Node struct {
 	Codec    serialization.Codec
 	Config   *config.Config
 
-	listener net.Listener
+	listener      net.Listener
+	listenerReady chan struct{}
 
 	mu      sync.Mutex
 	lookups []*dht.LookupResult
@@ -48,24 +48,27 @@ func New(cfg *config.Config) (*Node, error) {
 	rt := dht.NewRoutingTable(id.NodeID(), cfg.DHT.K)
 
 	n := &Node{
-		ID:           id.NodeID(),
-		Identity:     id,
-		RT:           rt,
-		Codec:        codec,
-		Config:       cfg,
-		Store:        records.NewStore(),
-		ownedRecords: make(map[nodeid.ID]*records.NodeRecord),
+		ID:            id.NodeID(),
+		Identity:      id,
+		RT:            rt,
+		Codec:         codec,
+		Config:        cfg,
+		Store:         records.NewStore(),
+		ownedRecords:  make(map[nodeid.ID]*records.NodeRecord),
+		listenerReady: make(chan struct{}),
 	}
-	n.RPC = rpc.NewManager(id, codec, n.handleRPC, cfg.Node.ReadTimeout)
+	n.RPC = rpc.NewManagerWithWriteTimeout(id, codec, n.handleRPC, cfg.Node.ReadTimeout, cfg.Node.WriteTimeout)
 	return n, nil
 }
 
 func (n *Node) Run(ctx context.Context) error {
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", n.Config.Node.Port))
 	if err != nil {
+		close(n.listenerReady)
 		return err
 	}
 	n.listener = ln
+	close(n.listenerReady)
 	log.Printf("node %s listening on :%d (state=%s)",
 		n.ID, n.Config.Node.Port, n.Config.Node.StateDir)
 	go func() {
@@ -87,6 +90,7 @@ func (n *Node) Run(ctx context.Context) error {
 
 	go n.refreshLoop(ctx)
 	go n.maintenanceLoop(ctx)
+	go n.experimentLoop(ctx)
 
 	<-ctx.Done()
 	n.RPC.Close()
@@ -123,10 +127,21 @@ func (n *Node) refreshLoop(ctx context.Context) {
 }
 
 func (n *Node) Addr() string {
-	return fmt.Sprintf("127.0.0.1:%d", n.Config.Node.Port)
+	<-n.listenerReady
+	if n.listener == nil {
+		return fmt.Sprintf("127.0.0.1:%d", n.Config.Node.Port)
+	}
+	addr, ok := n.listener.Addr().(*net.TCPAddr)
+	if !ok {
+		return fmt.Sprintf("127.0.0.1:%d", n.Config.Node.Port)
+	}
+	return fmt.Sprintf("127.0.0.1:%d", addr.Port)
 }
 
 func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Frame) (*protocol.Frame, error) {
+	if req.Version != 1 {
+		return nil, fmt.Errorf("unsupported protocol version %d", req.Version)
+	}
 	switch req.Type {
 	case protocol.FramePing:
 		return &protocol.Frame{Type: protocol.FramePong}, nil
@@ -165,12 +180,17 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 			return nil, err
 		}
 
+		if rec.DHTKey() != key {
+			return nil, fmt.Errorf("store: key %s does not match record DHTKey %s", key, rec.DHTKey())
+		}
+		if err := rec.Validate(); err != nil {
+			return nil, fmt.Errorf("store: invalid record: %w", err)
+		}
 		err = n.Store.Put(key, &rec)
 		success := (err == nil)
 		if errors.Is(err, records.ErrSequenceRollback) {
 			success = true
 		}
-
 		out, _ := n.Codec.Marshal(rpc.StoreResponse{Success: success})
 		return &protocol.Frame{Type: protocol.FrameStoreResponse, Payload: out}, nil
 
@@ -179,15 +199,16 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
 			return nil, err
 		}
-		key, _ := nodeid.FromBytes(m.Key)
-
+		key, err := nodeid.FromBytes(m.Key)
+		if err != nil {
+			return nil, err
+		}
 		rec, found := n.Store.Get(key)
 		if found {
 			recBytes, _ := n.Codec.Marshal(rec)
 			out, _ := n.Codec.Marshal(rpc.FindValueResponse{Record: recBytes})
 			return &protocol.Frame{Type: protocol.FrameFindValueResponse, Payload: out}, nil
 		}
-
 		closest := n.RT.Closest(key, n.RT.K())
 		wire := make([]rpc.ContactWire, 0, len(closest))
 		for _, c := range closest {
@@ -195,7 +216,6 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		}
 		out, _ := n.Codec.Marshal(rpc.FindValueResponse{Contacts: wire})
 		return &protocol.Frame{Type: protocol.FrameFindValueResponse, Payload: out}, nil
-
 	}
 	return nil, fmt.Errorf("unknown request type %d", req.Type)
 }
@@ -222,6 +242,10 @@ func (n *Node) bootstrapOne(ctx context.Context, addr string) error {
 		lastErr = err
 	}
 	return fmt.Errorf("bootstrap %s failed after retries: %w", addr, lastErr)
+}
+
+func (n *Node) AddContactForTest(ctx context.Context, id nodeid.ID, addr string) error {
+	return n.addContactWithEviction(ctx, &dht.Contact{ID: id, Address: addr, LastSeen: time.Now()})
 }
 
 func (n *Node) addContactWithEviction(ctx context.Context, c *dht.Contact) error {
@@ -308,7 +332,14 @@ func (n *Node) Lookups() []*dht.LookupResult {
 
 func (n *Node) PutRecord(ctx context.Context, rec *records.NodeRecord) error {
 	key := rec.DHTKey()
-	_ = n.Store.Put(key, rec)
+
+	if err := n.Store.Put(key, rec); err != nil {
+		if !errors.Is(err, records.ErrSequenceRollback) {
+			return fmt.Errorf("local store: %w", err)
+		}
+		log.Printf("node %s: local store has newer record for key %s (attempted seq=%d)",
+			n.ID, key, rec.Seq)
+	}
 
 	closest := n.RT.Closest(key, n.Config.DHT.Replication)
 	recBytes, _ := n.Codec.Marshal(rec)
@@ -323,7 +354,6 @@ func (n *Node) PutRecord(ctx context.Context, rec *records.NodeRecord) error {
 			defer wg.Done()
 			cCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
 			defer cancel()
-
 			resp, err := n.RPC.Call(cCtx, target.ID, target.Address, &protocol.Frame{
 				Version: 1, Type: protocol.FrameStoreRequest, Payload: reqPayload,
 			})
@@ -341,7 +371,6 @@ func (n *Node) PutRecord(ctx context.Context, rec *records.NodeRecord) error {
 	if len(closest)+1 < required {
 		required = len(closest) + 1
 	}
-
 	if int(successCount)+1 < required {
 		return fmt.Errorf("replication failed: got %d confirmations, required %d", successCount+1, required)
 	}
@@ -396,6 +425,9 @@ func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecor
 	if err := rec.Validate(); err != nil {
 		return nil, fmt.Errorf("invalid record: %w", err)
 	}
+	if rec.DHTKey() != key {
+		return nil, fmt.Errorf("record key mismatch: got %s, want %s", rec.DHTKey(), key)
+	}
 
 	_ = n.Store.Put(key, &rec)
 	return &rec, nil
@@ -413,15 +445,12 @@ func (n *Node) ResolveAlias(ctx context.Context, alias string) (*records.NodeRec
 	if norm == "" {
 		return nil, errors.New("empty alias")
 	}
-
-	key := sha256.Sum256([]byte(fmt.Sprintf("alias:%s", norm)))
-	keyID := nodeid.ID(key)
-
-	rec, err := n.GetRecord(ctx, keyID)
+	tmp := records.NodeRecord{Alias: norm}
+	key := tmp.DHTKey()
+	rec, err := n.GetRecord(ctx, key)
 	if err != nil {
 		return nil, err
 	}
-
 	if records.NormalizeAlias(rec.Alias) != norm {
 		return nil, errors.New("mismatched alias record")
 	}
@@ -432,7 +461,6 @@ func (n *Node) PublishRecord(ctx context.Context, rec *records.NodeRecord) error
 	n.mu.Lock()
 	n.ownedRecords[rec.DHTKey()] = rec
 	n.mu.Unlock()
-
 	return n.PutRecord(ctx, rec)
 }
 
@@ -441,7 +469,11 @@ func (n *Node) maintenanceLoop(ctx context.Context) {
 	if ttl <= 0 {
 		ttl = 180 * time.Second
 	}
-	republishInterval := ttl / 2
+	maxRepublish := ttl / 2
+	republishInterval := n.Config.DHT.RepublishInterval
+	if republishInterval <= 0 || republishInterval > maxRepublish {
+		republishInterval = maxRepublish
+	}
 	if republishInterval <= 0 {
 		republishInterval = 60 * time.Second
 	}
@@ -484,4 +516,45 @@ func (n *Node) maintenanceLoop(ctx context.Context) {
 			}
 		}
 	}
+}
+
+func (n *Node) experimentLoop(ctx context.Context) {
+	if !n.Config.Experiment.Enabled {
+		return
+	}
+	delay := n.Config.Experiment.Delay
+	if delay <= 0 {
+		delay = 20 * time.Second
+	}
+	select {
+	case <-ctx.Done():
+		return
+	case <-time.After(delay):
+	}
+
+	n.dumpMetricsSafe()
+
+	targets := make([]nodeid.ID, 0, len(n.Config.Experiment.Targets))
+	for _, h := range n.Config.Experiment.Targets {
+		id, err := nodeid.ParseHex(h)
+		if err != nil {
+			log.Printf("node %s: invalid experiment target %q: %v", n.ID, h, err)
+			continue
+		}
+		targets = append(targets, id)
+	}
+
+	for _, target := range targets {
+		lookupCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
+		res, err := n.Lookup(lookupCtx, target)
+		cancel()
+		if err != nil {
+			log.Printf("node %s: experiment lookup %s failed: %v", n.ID, target, err)
+			continue
+		}
+		log.Printf("node %s: experiment lookup target=%s iterations=%d rpcs=%d",
+			n.ID, target, res.Iterations, res.RPCs)
+	}
+
+	n.dumpMetricsSafe()
 }

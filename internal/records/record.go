@@ -7,6 +7,8 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"net"
+	"strconv"
 	"strings"
 	"time"
 
@@ -18,6 +20,8 @@ const (
 	RecordTypeNode  = "node"
 	RecordTypeAlias = "alias"
 	MaxRecordSize   = 16 * 1024 // 16 KB
+	MaxAddresses    = 10
+	MaxAliasBytes   = 128
 )
 
 type NodeRecord struct {
@@ -67,6 +71,9 @@ func (r *NodeRecord) Sign(id *identity.Identity) {
 }
 
 func (r *NodeRecord) Validate() error {
+	if len(r.PublicKey) != ed25519.PublicKeySize {
+		return errors.New("invalid public key size")
+	}
 	computedID, err := identity.NodeIDFromPublicKey(r.PublicKey)
 	if err != nil {
 		return err
@@ -82,8 +89,17 @@ func (r *NodeRecord) Validate() error {
 		return errors.New("invalid signature")
 	}
 
-	if len(r.Addresses) == 0 || len(r.Addresses) > 10 {
-		return errors.New("invalid number of addresses")
+	if len(r.Addresses) == 0 || len(r.Addresses) > MaxAddresses {
+		return fmt.Errorf("invalid number of addresses: %d", len(r.Addresses))
+	}
+	for _, addr := range r.Addresses {
+		if err := validateAddress(addr); err != nil {
+			return fmt.Errorf("invalid address %q: %w", addr, err)
+		}
+	}
+
+	if len(r.Alias) > MaxAliasBytes {
+		return fmt.Errorf("alias too long: %d > %d", len(r.Alias), MaxAliasBytes)
 	}
 
 	now := time.Now().Unix()
@@ -93,7 +109,32 @@ func (r *NodeRecord) Validate() error {
 	if r.IssuedAt > now+300 {
 		return errors.New("record issued in the future")
 	}
+	if r.ExpiresAt <= r.IssuedAt {
+		return errors.New("expires_at must be after issued_at")
+	}
 
+	if size := len(r.CanonicalBytes()); size > MaxRecordSize {
+		return fmt.Errorf("record exceeds MaxRecordSize: %d > %d", size, MaxRecordSize)
+	}
+
+	return nil
+}
+
+func validateAddress(addr string) error {
+	host, portStr, err := net.SplitHostPort(addr)
+	if err != nil {
+		return err
+	}
+	if host == "" {
+		return errors.New("empty host")
+	}
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return fmt.Errorf("invalid port: %w", err)
+	}
+	if port < 1 || port > 65535 {
+		return fmt.Errorf("port out of range: %d", port)
+	}
 	return nil
 }
 
