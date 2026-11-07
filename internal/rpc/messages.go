@@ -1,11 +1,14 @@
 package rpc
 
-type PingRequest struct{}
+type PingRequest struct {
+	Addr string `msgpack:"addr,omitempty" json:"addr,omitempty"`
+}
 
 type PingResponse struct{}
 
 type FindNodeRequest struct {
 	Target []byte `msgpack:"target" json:"target"`
+	Addr   string `msgpack:"addr,omitempty" json:"addr,omitempty"`
 }
 
 type ContactWire struct {
@@ -27,7 +30,8 @@ type StoreResponse struct {
 }
 
 type FindValueRequest struct {
-	Key []byte `msgpack:"key"`
+	Key  []byte `msgpack:"key"`
+	Addr string `msgpack:"addr,omitempty" json:"addr,omitempty"`
 }
 
 type FindValueResponse struct {

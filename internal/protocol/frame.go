@@ -58,8 +58,12 @@ func (f *Frame) Encode(w io.Writer) error {
 	if _, err := w.Write(header); err != nil {
 		return err
 	}
-	_, err := w.Write(f.Payload)
-	return err
+	if len(f.Payload) > 0 {
+		if _, err := w.Write(f.Payload); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func DecodeFrameHeader(header []byte) (*Frame, error) {

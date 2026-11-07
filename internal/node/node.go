@@ -19,6 +19,7 @@ import (
 	"p2p-overlay/internal/protocol/serialization"
 	"p2p-overlay/internal/records"
 	"p2p-overlay/internal/rpc"
+	"p2p-overlay/internal/tunnel"
 )
 
 type Node struct {
@@ -37,6 +38,11 @@ type Node struct {
 
 	Store        *records.Store
 	ownedRecords map[nodeid.ID]*records.NodeRecord
+
+	Tunnels *tunnel.Manager
+	AppMu   sync.Mutex
+	AppRecv []string
+	AppSent []string
 }
 
 func New(cfg *config.Config) (*Node, error) {
@@ -56,6 +62,7 @@ func New(cfg *config.Config) (*Node, error) {
 		Store:         records.NewStore(),
 		ownedRecords:  make(map[nodeid.ID]*records.NodeRecord),
 		listenerReady: make(chan struct{}),
+		Tunnels:       tunnel.NewManager(),
 	}
 	n.RPC = rpc.NewManagerWithWriteTimeout(id, codec, n.handleRPC, cfg.Node.ReadTimeout, cfg.Node.WriteTimeout)
 	return n, nil
@@ -71,6 +78,7 @@ func (n *Node) Run(ctx context.Context) error {
 	close(n.listenerReady)
 	log.Printf("node %s listening on :%d (state=%s)",
 		n.ID, n.Config.Node.Port, n.Config.Node.StateDir)
+
 	go func() {
 		if err := n.RPC.Serve(ctx, ln); err != nil {
 			log.Printf("node %s: rpc serve: %v", n.ID, err)
@@ -144,12 +152,23 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 	}
 	switch req.Type {
 	case protocol.FramePing:
-		return &protocol.Frame{Type: protocol.FramePong}, nil
+		var m rpc.PingRequest
+		if len(req.Payload) > 0 {
+			_ = n.Codec.Unmarshal(req.Payload, &m)
+		}
+		if m.Addr != "" {
+			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
+		}
+		out, _ := n.Codec.Marshal(rpc.PingResponse{})
+		return &protocol.Frame{Type: protocol.FramePong, Payload: out}, nil
 
 	case protocol.FrameFindNodeRequest:
 		var m rpc.FindNodeRequest
 		if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
 			return nil, err
+		}
+		if m.Addr != "" {
+			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
 		}
 		target, err := nodeid.FromBytes(m.Target)
 		if err != nil {
@@ -179,7 +198,6 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		if err != nil {
 			return nil, err
 		}
-
 		if rec.DHTKey() != key {
 			return nil, fmt.Errorf("store: key %s does not match record DHTKey %s", key, rec.DHTKey())
 		}
@@ -199,6 +217,9 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
 			return nil, err
 		}
+		if m.Addr != "" {
+			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
+		}
 		key, err := nodeid.FromBytes(m.Key)
 		if err != nil {
 			return nil, err
@@ -216,6 +237,13 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		}
 		out, _ := n.Codec.Marshal(rpc.FindValueResponse{Contacts: wire})
 		return &protocol.Frame{Type: protocol.FrameFindValueResponse, Payload: out}, nil
+
+	case protocol.FrameTunnelBuild:
+		return n.handleTunnelBuild(ctx, remote, req)
+	case protocol.FrameTunnelData:
+		return n.handleTunnelData(ctx, remote, req)
+	case protocol.FrameTunnelClose:
+		return n.handleTunnelClose(ctx, remote, req)
 	}
 	return nil, fmt.Errorf("unknown request type %d", req.Type)
 }
@@ -267,19 +295,17 @@ func (n *Node) addContactWithEviction(ctx context.Context, c *dht.Contact) error
 }
 
 func (n *Node) ping(ctx context.Context, c *dht.Contact) error {
-	_, err := n.RPC.Call(ctx, c.ID, c.Address,
-		&protocol.Frame{Version: 1, Type: protocol.FramePing})
+	payload, _ := n.Codec.Marshal(rpc.PingRequest{Addr: n.Addr()})
+	_, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{Version: 1, Type: protocol.FramePing, Payload: payload})
 	return err
 }
 
 func (n *Node) findNodeRPC(ctx context.Context, c *dht.Contact, target nodeid.ID) ([]*dht.Contact, error) {
-	payload, err := n.Codec.Marshal(rpc.FindNodeRequest{Target: target[:]})
+	payload, err := n.Codec.Marshal(rpc.FindNodeRequest{Target: target[:], Addr: n.Addr()})
 	if err != nil {
 		return nil, err
 	}
-	resp, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{
-		Version: 1, Type: protocol.FrameFindNodeRequest, Payload: payload,
-	})
+	resp, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{Version: 1, Type: protocol.FrameFindNodeRequest, Payload: payload})
 	if err != nil {
 		return nil, err
 	}
@@ -290,10 +316,7 @@ func (n *Node) findNodeRPC(ctx context.Context, c *dht.Contact, target nodeid.ID
 	out := make([]*dht.Contact, 0, len(m.Contacts))
 	for _, w := range m.Contacts {
 		id, err := nodeid.FromBytes(w.NodeID)
-		if err != nil {
-			continue
-		}
-		if id == n.ID {
+		if err != nil || id == n.ID {
 			continue
 		}
 		out = append(out, &dht.Contact{ID: id, Address: w.Address, LastSeen: time.Now()})
@@ -332,7 +355,6 @@ func (n *Node) Lookups() []*dht.LookupResult {
 
 func (n *Node) PutRecord(ctx context.Context, rec *records.NodeRecord) error {
 	key := rec.DHTKey()
-
 	if err := n.Store.Put(key, rec); err != nil {
 		if !errors.Is(err, records.ErrSequenceRollback) {
 			return fmt.Errorf("local store: %w", err)
@@ -383,7 +405,7 @@ func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecor
 	}
 
 	findFunc := func(ctx context.Context, c *dht.Contact, k nodeid.ID) dht.FindValueResult {
-		payload, _ := n.Codec.Marshal(rpc.FindValueRequest{Key: k[:]})
+		payload, _ := n.Codec.Marshal(rpc.FindValueRequest{Key: k[:], Addr: n.Addr()})
 		resp, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{
 			Version: 1, Type: protocol.FrameFindValueRequest, Payload: payload,
 		})
@@ -398,11 +420,9 @@ func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecor
 		if err := n.Codec.Unmarshal(resp.Payload, &m); err != nil {
 			return dht.FindValueResult{Err: err}
 		}
-
 		if len(m.Record) > 0 {
 			return dht.FindValueResult{Record: m.Record}
 		}
-
 		var contacts []*dht.Contact
 		for _, w := range m.Contacts {
 			id, _ := nodeid.FromBytes(w.NodeID)
@@ -492,6 +512,7 @@ func (n *Node) maintenanceLoop(ctx context.Context) {
 			if deleted > 0 {
 				log.Printf("node %s: TTL cleanup removed %d records", n.ID, deleted)
 			}
+			n.Tunnels.Cleanup(time.Now())
 		case <-republishTicker.C:
 			n.mu.Lock()
 			recordsToRepublish := make([]*records.NodeRecord, 0, len(n.ownedRecords))
