@@ -23,3 +23,5 @@ coverage.html
 *.out
 tmp/
 tmp-*.yaml
+
+docker-compose.yml
