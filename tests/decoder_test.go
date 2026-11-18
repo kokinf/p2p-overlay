@@ -3,6 +3,7 @@ package tests
 import (
 	"bytes"
 	"io"
+	"math/rand"
 	"testing"
 
 	"p2p-overlay/internal/protocol"
@@ -25,14 +26,16 @@ func TestDecoderChunkedStream(t *testing.T) {
 	pr, pw := io.Pipe()
 	go func() {
 		defer pw.Close()
-		for off := 0; off < len(raw); off += 7 {
-			end := off + 7
+		rng := rand.New(rand.NewSource(42))
+		for off := 0; off < len(raw); {
+			end := off + 1 + rng.Intn(137)
 			if end > len(raw) {
 				end = len(raw)
 			}
 			if _, err := pw.Write(raw[off:end]); err != nil {
 				return
 			}
+			off = end
 		}
 	}()
 

@@ -43,3 +43,24 @@ func TestStreamDecoderPartialReads(t *testing.T) {
 		t.Fatalf("got %d frames", len(frames))
 	}
 }
+
+type shortFrameWriter struct{ data []byte }
+
+func (w *shortFrameWriter) Write(p []byte) (int, error) {
+	n := len(p)
+	if n > 3 {
+		n = 3
+	}
+	w.data = append(w.data, p[:n]...)
+	return n, nil
+}
+func TestFrameShortWrites(t *testing.T) {
+	w := &shortFrameWriter{}
+	f := &protocol.Frame{Version: 1, Type: protocol.FramePing, Payload: []byte("payload")}
+	if err := f.Encode(w); err != nil {
+		t.Fatal(err)
+	}
+	if len(w.data) != protocol.FrameHeaderSize+7 {
+		t.Fatalf("truncated write: %d", len(w.data))
+	}
+}

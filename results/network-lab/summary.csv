@@ -1,0 +1,11 @@
+mode,operation,n,success,warm_n,warm_mean_ms,warm_median_ms,warm_min_ms,warm_max_ms
+baseline-random,lookup,6,6,5,1.4,1,1,2
+baseline-random,message,6,6,5,1.4,1,1,2
+baseline-rating,lookup,6,6,5,1.2,1,1,2
+baseline-rating,message,6,6,5,1.4,1,1,2
+degraded-random,lookup,6,6,5,244.6,161,161,579
+degraded-random,message,6,6,5,348,322,322,452
+degraded-rating,lookup,6,6,5,161,161,161,161
+degraded-rating,message,6,6,5,1.6,2,1,2
+restricted-random,lookup,6,6,5,1,1,1,1
+restricted-random,message,6,6,5,1.8,2,1,2

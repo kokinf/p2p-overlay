@@ -21,6 +21,10 @@ const maxConcurrentHandlers = 64
 type Handler func(ctx context.Context, remote nodeid.ID, req *protocol.Frame) (*protocol.Frame, error)
 
 type Manager struct {
+	ctx          context.Context
+	cancel       context.CancelFunc
+	incoming     map[net.Conn]struct{}
+	maxPayload   uint32
 	id           *identity.Identity
 	codec        serialization.Codec
 	timeout      time.Duration
@@ -29,6 +33,7 @@ type Manager struct {
 	tlsCert      tls.Certificate
 
 	mu          sync.Mutex
+	allConns    map[*conn]struct{}
 	conns       map[nodeid.ID]*conn
 	pending     map[[16]byte]chan *protocol.Frame
 	replayCache map[[16]byte]time.Time
@@ -43,11 +48,17 @@ func NewManager(id *identity.Identity, codec serialization.Codec, handler Handle
 }
 
 func NewManagerWithWriteTimeout(id *identity.Identity, codec serialization.Codec, handler Handler, readTimeout, writeTimeout time.Duration) *Manager {
+	if readTimeout <= 0 {
+		readTimeout = 10 * time.Second
+	}
 	cert, err := id.GenerateTLSCertificate()
 	if err != nil {
 		log.Fatalf("failed to generate TLS cert: %v", err)
 	}
+	managerCtx, managerCancel := context.WithCancel(context.Background())
 	m := &Manager{
+		ctx: managerCtx, cancel: managerCancel, incoming: make(map[net.Conn]struct{}),
+		maxPayload:   protocol.MaxFramePayload,
 		id:           id,
 		codec:        codec,
 		timeout:      readTimeout,
@@ -55,6 +66,7 @@ func NewManagerWithWriteTimeout(id *identity.Identity, codec serialization.Codec
 		handler:      handler,
 		tlsCert:      cert,
 		conns:        make(map[nodeid.ID]*conn),
+		allConns:     make(map[*conn]struct{}),
 		pending:      make(map[[16]byte]chan *protocol.Frame),
 		replayCache:  make(map[[16]byte]time.Time),
 		sem:          make(chan struct{}, maxConcurrentHandlers),
@@ -89,11 +101,28 @@ func (m *Manager) Serve(ctx context.Context, ln net.Listener) error {
 			}
 			return err
 		}
+		m.mu.Lock()
+		select {
+		case <-m.done:
+			m.mu.Unlock()
+			nc.Close()
+			return nil
+		default:
+		}
+		if len(m.incoming) >= 256 {
+			m.mu.Unlock()
+			nc.Close()
+			continue
+		}
+		m.incoming[nc] = struct{}{}
+		m.mu.Unlock()
 		go m.serveConn(nc)
 	}
 }
 
 func (m *Manager) serveConn(nc net.Conn) {
+	defer func() { m.mu.Lock(); delete(m.incoming, nc); m.mu.Unlock(); nc.Close() }()
+	_ = nc.SetDeadline(time.Now().Add(m.timeout))
 	tlsConn, ok := nc.(*tls.Conn)
 	if !ok {
 		_ = nc.Close()
@@ -106,6 +135,7 @@ func (m *Manager) serveConn(nc net.Conn) {
 		return
 	}
 
+	_ = nc.SetDeadline(time.Time{})
 	state := tlsConn.ConnectionState()
 	if len(state.PeerCertificates) == 0 {
 		_ = nc.Close()
@@ -119,13 +149,17 @@ func (m *Manager) serveConn(nc net.Conn) {
 	}
 
 	c := newConn(tlsConn, m.writeTimeout)
+	c.dec.MaxPayload = m.maxPayload
 	c.remote = remoteID
-
 	m.mu.Lock()
-	if existing, ok := m.conns[remoteID]; ok {
-		existing.close()
+	select {
+	case <-m.done:
+		m.mu.Unlock()
+		c.close()
+		return
+	default:
 	}
-	m.conns[remoteID] = c
+	m.allConns[c] = struct{}{}
 	m.mu.Unlock()
 
 	defer func() {
@@ -141,6 +175,16 @@ func (m *Manager) serveConn(nc net.Conn) {
 }
 
 func (m *Manager) readLoop(c *conn) {
+	defer func() {
+		m.mu.Lock()
+		delete(m.allConns, c)
+		if m.conns[c.remote] == c {
+			delete(m.conns, c.remote)
+		}
+		m.mu.Unlock()
+		c.close()
+	}()
+
 	for {
 		f, err := c.read(m.timeout)
 		if err != nil {
@@ -150,7 +194,12 @@ func (m *Manager) readLoop(c *conn) {
 			m.deliver(f)
 			continue
 		}
-		go m.handleRequest(c, f)
+		select {
+		case m.sem <- struct{}{}:
+			go func() { defer func() { <-m.sem }(); m.handleRequest(c, f) }()
+		default:
+			_ = c.write(&protocol.Frame{Version: f.Version, Type: protocol.FrameError, RequestID: f.RequestID, Payload: []byte("RPC capacity exceeded")})
+		}
 	}
 }
 
@@ -176,17 +225,14 @@ func (m *Manager) handleRequest(c *conn, f *protocol.Frame) {
 		log.Printf("rpc: replay detected for request_id %x from %s", f.RequestID[:4], c.remote)
 		return
 	}
+	if len(m.replayCache) >= 100000 {
+		m.mu.Unlock()
+		return
+	}
 	m.replayCache[f.RequestID] = time.Now()
 	m.mu.Unlock()
 
-	select {
-	case m.sem <- struct{}{}:
-	case <-m.done:
-		return
-	}
-	defer func() { <-m.sem }()
-
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(m.ctx, m.timeout)
 	defer cancel()
 	resp, err := m.handler(ctx, c.remote, f)
 	if err != nil {
@@ -230,6 +276,11 @@ func (m *Manager) cleanupReplayCache() {
 }
 
 func (m *Manager) Call(ctx context.Context, remote nodeid.ID, addr string, req *protocol.Frame) (*protocol.Frame, error) {
+	if len(req.Payload) > int(m.maxPayload) {
+		return nil, fmt.Errorf("configured payload limit exceeded")
+	}
+	ctx, cancel := context.WithTimeout(ctx, m.timeout)
+	defer cancel()
 	c, err := m.getOrDial(ctx, remote, addr)
 	if err != nil {
 		return nil, err
@@ -259,6 +310,8 @@ func (m *Manager) Call(ctx context.Context, remote nodeid.ID, addr string, req *
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
+	case <-m.done:
+		return nil, fmt.Errorf("RPC manager closed")
 	case resp := <-ch:
 		if resp.Type == protocol.FrameError {
 			return nil, fmt.Errorf("remote error: %s", string(resp.Payload))
@@ -268,6 +321,11 @@ func (m *Manager) Call(ctx context.Context, remote nodeid.ID, addr string, req *
 }
 
 func (m *Manager) DialUnverified(ctx context.Context, addr string) (nodeid.ID, error) {
+	select {
+	case <-m.done:
+		return nodeid.ID{}, fmt.Errorf("RPC manager closed")
+	default:
+	}
 	config := &tls.Config{
 		Certificates:       []tls.Certificate{m.tlsCert},
 		InsecureSkipVerify: true,
@@ -296,6 +354,7 @@ func (m *Manager) DialUnverified(ctx context.Context, addr string) (nodeid.ID, e
 	}
 
 	c := newConn(tlsConn, m.writeTimeout)
+	c.dec.MaxPayload = m.maxPayload
 	c.remote = remoteID
 
 	m.mu.Lock()
@@ -305,6 +364,7 @@ func (m *Manager) DialUnverified(ctx context.Context, addr string) (nodeid.ID, e
 		return remoteID, nil
 	}
 	m.conns[remoteID] = c
+	m.allConns[c] = struct{}{}
 	m.mu.Unlock()
 
 	go m.readLoop(c)
@@ -312,6 +372,11 @@ func (m *Manager) DialUnverified(ctx context.Context, addr string) (nodeid.ID, e
 }
 
 func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) (*conn, error) {
+	select {
+	case <-m.done:
+		return nil, fmt.Errorf("RPC manager closed")
+	default:
+	}
 	m.mu.Lock()
 	if c, ok := m.conns[remote]; ok {
 		m.mu.Unlock()
@@ -349,15 +414,24 @@ func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) 
 	}
 
 	c := newConn(tlsConn, m.writeTimeout)
+	c.dec.MaxPayload = m.maxPayload
 	c.remote = remote
 
 	m.mu.Lock()
+	select {
+	case <-m.done:
+		m.mu.Unlock()
+		nc.Close()
+		return nil, fmt.Errorf("RPC manager closed")
+	default:
+	}
 	if existing, ok := m.conns[remote]; ok {
 		m.mu.Unlock()
 		_ = nc.Close()
 		return existing, nil
 	}
 	m.conns[remote] = c
+	m.allConns[c] = struct{}{}
 	m.mu.Unlock()
 
 	go m.readLoop(c)
@@ -365,12 +439,17 @@ func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) 
 }
 
 func (m *Manager) Close() {
-	m.closeOnce.Do(func() { close(m.done) })
+	m.closeOnce.Do(func() { close(m.done); m.cancel() })
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	for _, c := range m.conns {
+	for c := range m.incoming {
+		c.Close()
+	}
+	m.incoming = make(map[net.Conn]struct{})
+	for c := range m.allConns {
 		c.close()
 	}
+	m.allConns = make(map[*conn]struct{})
 	m.conns = map[nodeid.ID]*conn{}
 }
 
@@ -396,4 +475,8 @@ func newRequestID() ([16]byte, error) {
 	var id [16]byte
 	_, err := rand.Read(id[:])
 	return id, err
+}
+
+func (m *Manager) SetMaxPayload(limit uint32) {
+	m.maxPayload = limit
 }

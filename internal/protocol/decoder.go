@@ -7,7 +7,8 @@ import (
 )
 
 type StreamDecoder struct {
-	r *bufio.Reader
+	r          *bufio.Reader
+	MaxPayload uint32
 }
 
 func NewStreamDecoder(r io.Reader) *StreamDecoder {
@@ -22,6 +23,9 @@ func (d *StreamDecoder) ReadFrame() (*Frame, error) {
 	f, err := DecodeFrameHeader(header)
 	if err != nil {
 		return nil, err
+	}
+	if d.MaxPayload > 0 && f.PayloadLength > d.MaxPayload {
+		return nil, errors.New("configured payload limit exceeded")
 	}
 	if f.PayloadLength > 0 {
 		f.Payload = make([]byte, f.PayloadLength)

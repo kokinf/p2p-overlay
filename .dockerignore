@@ -1,0 +1,8 @@
+.git
+run
+state
+*.key
+*.pem
+node.exe
+results
+*.log

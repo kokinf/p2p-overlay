@@ -62,3 +62,27 @@ func TestUnknownProtocolVersionRejected(t *testing.T) {
 		t.Fatalf("expected PONG, got %d", resp.Type)
 	}
 }
+
+func TestMalformedRPCPayloadAndUnknownType(t *testing.T) {
+	cfg := &config.Config{Node: config.NodeConfig{Port: mustFreePort(t), StateDir: t.TempDir(), ReadTimeout: 2 * time.Second, WriteTimeout: 2 * time.Second}, DHT: config.DHTConfig{K: 3}, Protocol: config.ProtocolConfig{Codec: "msgpack"}}
+	n, err := node.New(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go n.Run(ctx)
+	defer n.Stop()
+	addr := n.Addr()
+	id, _ := identity.LoadOrCreate(t.TempDir())
+	m := rpc.NewManager(id, serialization.MsgPackCodec{}, nil, 2*time.Second)
+	defer m.Close()
+	for _, f := range []*protocol.Frame{{Type: protocol.FramePing, Payload: []byte{0xc1}}, {Type: protocol.FrameType(255)}} {
+		if _, err = m.Call(ctx, n.ID, addr, f); err == nil {
+			t.Fatal("invalid RPC accepted")
+		}
+	}
+	if _, err = m.Call(ctx, n.ID, addr, &protocol.Frame{Type: protocol.FramePing}); err != nil {
+		t.Fatal("node failed after malformed input", err)
+	}
+}

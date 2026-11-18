@@ -10,6 +10,9 @@ def check_metrics(directory, N, K):
         return False
 
     total_nodes = len(files)
+    if total_nodes != N:
+        print("[FAIL] Expected metrics from all N nodes")
+        return False
     nodes_with_full_table = 0
     total_lookups = 0
     successful_multihop_lookups = 0
@@ -21,18 +24,24 @@ def check_metrics(directory, N, K):
         with open(file, 'r') as f:
             data = json.load(f)
 
-        contacts_count = sum(len(b['contacts']) for b in data['buckets'])
+        contacts = [c for b in data['buckets'] for c in b['contacts']]
+        if any(len(b['contacts']) > K for b in data['buckets']) or len(set(contacts)) != len(contacts) or data['node_id'] in contacts:
+            print('[FAIL] Invalid routing table')
+            return False
+        contacts_count = len(contacts)
         
         if contacts_count >= (N - 1):
             nodes_with_full_table += 1
 
-        for lookup in data['lookups']:
+        for lookup in data.get('lookups') or []:
+            if isinstance(lookup['target'], list):
+                lookup['target'] = bytes(lookup['target']).hex()
             total_lookups += 1
             
-            if lookup['target'] not in lookup['initial_closest']:
+            if lookup['target'] not in (lookup.get('initial_closest') or []):
                 initial_hits += 1
                 
-                if lookup['iterations'] >= 2:
+                if lookup['iterations'] >= 2 and lookup['target'] in (lookup.get('closest') or []):
                     successful_multihop_lookups += 1
 
     print("\n - Non-Degeneracy -")
@@ -42,7 +51,7 @@ def check_metrics(directory, N, K):
     if pct_full > 20.0:
         print("[FAIL] Too many nodes have a full table. DHT is degenerate.")
         return False
-    print("[PASS] DHT is non-degenerate.")
+    print("[PASS] Routing table occupancy check passed (partial criterion).")
 
     print("\n - Lookups -")
     print(f"Total lookups: {total_lookups}")

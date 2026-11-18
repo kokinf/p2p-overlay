@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"strconv"
 	"syscall"
+	"time"
 
 	"p2p-overlay/internal/config"
 	"p2p-overlay/internal/identity"
@@ -16,6 +18,16 @@ import (
 )
 
 func main() {
+	if len(os.Args) == 3 && os.Args[1] == "probe" {
+		c, err := net.DialTimeout("tcp", os.Args[2], 2*time.Second)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		c.Close()
+		fmt.Println("TCP reachable")
+		return
+	}
 	if len(os.Args) >= 2 && os.Args[1] == "gen-identities" {
 		runGenIdentities(os.Args[2:])
 		return

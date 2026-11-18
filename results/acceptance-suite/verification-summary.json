@@ -1,0 +1,15 @@
+{
+  "configurations": 6,
+  "independent_runs": 30,
+  "unknown_target_lookups": 900,
+  "successful_lookups": 900,
+  "warm_messages": 900,
+  "candidate_failures_passed": 30,
+  "holder_failures_passed": 30,
+  "seed_find_node_passed": 30,
+  "seed_find_value_passed": 30,
+  "relay_recoveries_passed": 30,
+  "full_tables": 0,
+  "node_snapshots": 570,
+  "source_hash_mismatches": []
+}

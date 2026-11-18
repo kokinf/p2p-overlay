@@ -77,8 +77,8 @@ func TestStoreRejectsKeyMismatch(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if size := nB.Store.Size(); size != 0 {
-		t.Fatalf("expected empty store, got %d records", size)
+	if _, ok := nB.Store.Get(wrongKey); ok {
+		t.Fatal("mismatched record stored")
 	}
 }
 

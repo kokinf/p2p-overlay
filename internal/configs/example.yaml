@@ -1,0 +1,36 @@
+node:
+  port: 9000
+  advertise_address: 127.0.0.1:9000
+  state_dir: ./state/node-0
+  read_timeout: 5s
+  write_timeout: 5s
+protocol:
+  version: 1
+  max_frame_payload: 65536
+  codec: msgpack
+dht:
+  k: 3
+  alpha: 3
+  replication: 3
+  ttl_seconds: 180
+  refresh_interval: 15s
+  republish_interval: 60s
+  relay_strategy: random
+tunnel:
+  relays: 3
+  pool_size: 3
+  ttl: 5m
+  max_per_subnet: 0
+files:
+  enabled: true
+  download_dir: ./downloads/node-0
+bootstrap:
+  scheme: star
+  peers: []
+experiment:
+  enabled: false
+  delay: 25s
+  repeats: 6
+  interval: 1s
+  output_dir: ./run/metrics/node-0
+  targets: []

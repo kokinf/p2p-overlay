@@ -4,31 +4,14 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/ecdh"
+	"crypto/hkdf"
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/binary"
+	"errors"
 	"io"
 )
-
-func hkdfSHA256(secret, salt, info []byte, length int) []byte {
-	if len(salt) == 0 {
-		salt = make([]byte, sha256.Size)
-	}
-	h := hmac.New(sha256.New, salt)
-	h.Write(secret)
-	prk := h.Sum(nil)
-
-	var out, prev []byte
-	for i := byte(1); len(out) < length; i++ {
-		h := hmac.New(sha256.New, prk)
-		h.Write(prev)
-		h.Write(info)
-		h.Write([]byte{i})
-		prev = h.Sum(nil)
-		out = append(out, prev...)
-	}
-	return out[:length]
-}
 
 func NewE2EKeypair() (*ecdh.PrivateKey, []byte) {
 	priv, _ := ecdh.X25519().GenerateKey(rand.Reader)
@@ -44,18 +27,36 @@ func DeriveE2EKey(priv *ecdh.PrivateKey, peerPub []byte, tunnelID [16]byte) ([]b
 	if err != nil {
 		return nil, err
 	}
-	return hkdfSHA256(shared, nil, tunnelID[:], 32), nil
+	return hkdf.Key(sha256.New, shared, nil, string(tunnelID[:]), 32)
 }
 
 func Encrypt(key, nonce, plaintext []byte) ([]byte, error) {
-	block, _ := aes.NewCipher(key)
-	gcm, _ := cipher.NewGCM(block)
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	if len(nonce) != gcm.NonceSize() {
+		return nil, errors.New("invalid nonce size")
+	}
 	return gcm.Seal(nil, nonce, plaintext, nil), nil
 }
 
 func Decrypt(key, nonce, ct []byte) ([]byte, error) {
-	block, _ := aes.NewCipher(key)
-	gcm, _ := cipher.NewGCM(block)
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	if len(nonce) != gcm.NonceSize() {
+		return nil, errors.New("invalid nonce size")
+	}
 	return gcm.Open(nil, nonce, ct, nil)
 }
 
@@ -63,4 +64,47 @@ func RandomNonce() []byte {
 	n := make([]byte, 12)
 	io.ReadFull(rand.Reader, n)
 	return n
+}
+
+func DataContext(id []byte, seq uint64) []byte {
+	b := append([]byte("tunnel-data-v1"), id...)
+	return binary.BigEndian.AppendUint64(b, seq)
+}
+func SealData(key, nonce, data, id []byte, seq uint64) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	if len(nonce) != gcm.NonceSize() {
+		return nil, errors.New("invalid nonce")
+	}
+	return gcm.Seal(nil, nonce, data, DataContext(id, seq)), nil
+}
+func OpenData(key, nonce, data, id []byte, seq uint64) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	if len(nonce) != gcm.NonceSize() {
+		return nil, errors.New("invalid nonce")
+	}
+	return gcm.Open(nil, nonce, data, DataContext(id, seq))
+}
+func AckTag(key, id []byte, seq uint64, ct []byte) []byte {
+	h := hmac.New(sha256.New, key)
+	h.Write([]byte("tunnel-ack-v1"))
+	h.Write(DataContext(id, seq))
+	h.Write(ct)
+	return h.Sum(nil)
+}
+func VerifyAck(key, id []byte, seq uint64, ct, tag []byte) bool {
+	return hmac.Equal(AckTag(key, id, seq, ct), tag)
 }

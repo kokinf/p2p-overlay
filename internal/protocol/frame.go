@@ -55,11 +55,11 @@ func (f *Frame) Encode(w io.Writer) error {
 	binary.BigEndian.PutUint16(header[2:4], f.Flags)
 	copy(header[4:20], f.RequestID[:])
 	binary.BigEndian.PutUint32(header[20:24], uint32(len(f.Payload)))
-	if _, err := w.Write(header); err != nil {
+	if err := writeAll(w, header); err != nil {
 		return err
 	}
 	if len(f.Payload) > 0 {
-		if _, err := w.Write(f.Payload); err != nil {
+		if err := writeAll(w, f.Payload); err != nil {
 			return err
 		}
 	}
@@ -81,4 +81,21 @@ func DecodeFrameHeader(header []byte) (*Frame, error) {
 		return nil, errors.New("payload length exceeds maximum")
 	}
 	return f, nil
+}
+
+func writeAll(w io.Writer, b []byte) error {
+	for len(b) > 0 {
+		n, err := w.Write(b)
+		if n < 0 || n > len(b) {
+			return io.ErrShortWrite
+		}
+		if err != nil {
+			return err
+		}
+		if n == 0 {
+			return io.ErrShortWrite
+		}
+		b = b[n:]
+	}
+	return nil
 }

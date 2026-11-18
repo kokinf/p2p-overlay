@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -8,11 +9,12 @@ import (
 )
 
 type NodeConfig struct {
-	ID           string        `yaml:"id"`
-	Port         int           `yaml:"port"`
-	StateDir     string        `yaml:"state_dir"`
-	ReadTimeout  time.Duration `yaml:"read_timeout"`
-	WriteTimeout time.Duration `yaml:"write_timeout"`
+	AdvertiseAddress string        `yaml:"advertise_address"`
+	ID               string        `yaml:"id"`
+	Port             int           `yaml:"port"`
+	StateDir         string        `yaml:"state_dir"`
+	ReadTimeout      time.Duration `yaml:"read_timeout"`
+	WriteTimeout     time.Duration `yaml:"write_timeout"`
 }
 
 type ProtocolConfig struct {
@@ -28,6 +30,14 @@ type DHTConfig struct {
 	TTLSeconds        int           `yaml:"ttl_seconds"`
 	RefreshInterval   time.Duration `yaml:"refresh_interval"`
 	RepublishInterval time.Duration `yaml:"republish_interval"`
+	RelayStrategy     string        `yaml:"relay_strategy"` // random или rating
+}
+
+type TunnelConfig struct {
+	MaxPerSubnet int           `yaml:"max_per_subnet"`
+	Relays       int           `yaml:"relays"`
+	PoolSize     int           `yaml:"pool_size"`
+	TTL          time.Duration `yaml:"ttl"`
 }
 
 type BootstrapConfig struct {
@@ -36,13 +46,31 @@ type BootstrapConfig struct {
 }
 
 type ExperimentConfig struct {
+	Repeats   int           `yaml:"repeats"`
+	Interval  time.Duration `yaml:"interval"`
+	Message   string        `yaml:"message"`
 	Enabled   bool          `yaml:"enabled"`
 	Delay     time.Duration `yaml:"delay"`
 	Targets   []string      `yaml:"targets"`
 	OutputDir string        `yaml:"output_dir"`
 }
 
+type FileConfig struct {
+	Enabled     *bool  `yaml:"enabled"`
+	DownloadDir string `yaml:"download_dir"`
+}
+
+func (f FileConfig) IsEnabled() bool { return f.Enabled == nil || *f.Enabled }
+func (f FileConfig) Directory() string {
+	if f.DownloadDir == "" {
+		return "downloads"
+	}
+	return f.DownloadDir
+}
+
 type Config struct {
+	Files      FileConfig       `yaml:"files"`
+	Tunnel     TunnelConfig     `yaml:"tunnel"`
 	Node       NodeConfig       `yaml:"node"`
 	Protocol   ProtocolConfig   `yaml:"protocol"`
 	DHT        DHTConfig        `yaml:"dht"`
@@ -60,4 +88,38 @@ func Load(path string) (*Config, error) {
 		return nil, err
 	}
 	return &cfg, nil
+}
+
+func (c *Config) Validate() error {
+	if c.Tunnel.MaxPerSubnet < 0 || c.Tunnel.MaxPerSubnet > 4 {
+		return fmt.Errorf("max_per_subnet must be 0..4")
+	}
+	if c.Experiment.Repeats < 0 || c.Experiment.Repeats > 1000 {
+		return fmt.Errorf("experiment repeats must be 0..1000")
+	}
+	if c.DHT.RelayStrategy != "" && c.DHT.RelayStrategy != "random" && c.DHT.RelayStrategy != "rating" {
+		return fmt.Errorf("invalid relay strategy")
+	}
+	if c.Protocol.Version != 0 && c.Protocol.Version != 1 {
+		return fmt.Errorf("unsupported protocol version %d", c.Protocol.Version)
+	}
+	if c.Protocol.MaxFramePayload < 0 || c.Protocol.MaxFramePayload > 65536 {
+		return fmt.Errorf("max_frame_payload must be <=65536")
+	}
+	if c.DHT.Alpha != 0 && c.DHT.Alpha != 3 {
+		return fmt.Errorf("ALPHA must be 3")
+	}
+	if c.DHT.Replication != 0 && c.DHT.Replication != 3 {
+		return fmt.Errorf("replication must be 3")
+	}
+	if c.DHT.K < 1 || c.DHT.K > 256 {
+		return fmt.Errorf("invalid bucket capacity")
+	}
+	if c.Tunnel.Relays != 0 && (c.Tunnel.Relays < 2 || c.Tunnel.Relays > 4) {
+		return fmt.Errorf("relay count must be 2..4")
+	}
+	if c.Tunnel.PoolSize < 0 || c.Tunnel.PoolSize > 16 {
+		return fmt.Errorf("pool size must be 1..16")
+	}
+	return nil
 }

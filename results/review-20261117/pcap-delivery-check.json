@@ -1,0 +1,10 @@
+{
+  "packets": 2037,
+  "bytes": 427577,
+  "plaintext_present": false,
+  "deliveries_during_capture": 19,
+  "capture_start_utc": "2026-11-17T17:32:11.133864+00:00",
+  "capture_end_utc": "2026-11-17T17:32:43.785630+00:00",
+  "deliveries_at_capture_node_during_window": 1,
+  "capture_service": "node-0"
+}

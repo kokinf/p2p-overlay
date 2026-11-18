@@ -2,6 +2,8 @@ package dht
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"net"
 	"sort"
@@ -23,6 +25,10 @@ type IterationTrace struct {
 }
 
 type LookupResult struct {
+	Contacts       []*Contact       `json:"-"`
+	LookupID       string           `json:"lookup_id"`
+	Initiator      string           `json:"initiator"`
+	Kind           string           `json:"kind"`
 	Target         nodeid.ID        `json:"target"`
 	InitialClosest []string         `json:"initial_closest"`
 	Closest        []string         `json:"closest"`
@@ -38,18 +44,22 @@ type LookupResult struct {
 
 func IterativeLookup(ctx context.Context, rt *RoutingTable, target nodeid.ID, find FindNodeFunc) *LookupResult {
 	started := time.Now()
-	res := &LookupResult{Target: target, Started: started}
+	res := newLookupResult(rt, target, "node", started)
 
 	queried := make(map[nodeid.ID]bool)
+	failed := make(map[nodeid.ID]bool)
 	queried[rt.Self()] = true
 
 	var shortlist []*Contact
-	shortlist = append(shortlist, rt.Closest(target, rt.K())...)
-	for _, c := range shortlist {
+	shortlist = append(shortlist, rt.Closest(target, 0)...)
+	for _, c := range rt.Closest(target, 0) {
 		res.InitialClosest = append(res.InitialClosest, c.ID.String())
 	}
 
 	for {
+		if ctx.Err() != nil {
+			break
+		}
 		sort.Slice(shortlist, func(i, j int) bool {
 			return nodeid.Less(shortlist[i].ID, shortlist[j].ID, target)
 		})
@@ -88,6 +98,7 @@ func IterativeLookup(ctx context.Context, rt *RoutingTable, target nodeid.ID, fi
 			r := <-ch
 			res.RPCs++
 			if r.err != nil {
+				failed[r.contact.ID] = true
 				res.Errors++
 				if isTimeout(r.err) || errors.Is(r.err, context.DeadlineExceeded) {
 					res.Timeouts++
@@ -100,7 +111,7 @@ func IterativeLookup(ctx context.Context, rt *RoutingTable, target nodeid.ID, fi
 			trace.Replies++
 			rt.Touch(r.contact.ID)
 			for _, nc := range r.contacts {
-				if nc.ID == rt.Self() {
+				if nc.ID == rt.Self() || failed[nc.ID] {
 					continue
 				}
 				if !containsContact(shortlist, nc.ID) {
@@ -110,8 +121,8 @@ func IterativeLookup(ctx context.Context, rt *RoutingTable, target nodeid.ID, fi
 			sort.Slice(shortlist, func(i, j int) bool {
 				return nodeid.Less(shortlist[i].ID, shortlist[j].ID, target)
 			})
-			if len(shortlist) > 2*rt.K() {
-				shortlist = shortlist[:2*rt.K()]
+			if len(shortlist) > 256*rt.K() {
+				shortlist = shortlist[:256*rt.K()]
 			}
 		}
 		res.Trace = append(res.Trace, trace)
@@ -120,6 +131,7 @@ func IterativeLookup(ctx context.Context, rt *RoutingTable, target nodeid.ID, fi
 	sort.Slice(shortlist, func(i, j int) bool {
 		return nodeid.Less(shortlist[i].ID, shortlist[j].ID, target)
 	})
+	res.Contacts = append([]*Contact(nil), shortlist...)
 	if len(shortlist) > rt.K() {
 		shortlist = shortlist[:rt.K()]
 	}
@@ -170,18 +182,22 @@ type FindValueFunc func(ctx context.Context, c *Contact, key nodeid.ID) FindValu
 
 func IterativeLookupValue(ctx context.Context, rt *RoutingTable, key nodeid.ID, find FindValueFunc) ([]byte, *LookupResult) {
 	started := time.Now()
-	res := &LookupResult{Target: key, Started: started}
+	res := newLookupResult(rt, key, "value", started)
 
 	queried := make(map[nodeid.ID]bool)
+	failed := make(map[nodeid.ID]bool)
 	queried[rt.Self()] = true
 
 	var shortlist []*Contact
-	shortlist = append(shortlist, rt.Closest(key, rt.K())...)
-	for _, c := range shortlist {
+	shortlist = append(shortlist, rt.Closest(key, 0)...)
+	for _, c := range rt.Closest(key, 0) {
 		res.InitialClosest = append(res.InitialClosest, c.ID.String())
 	}
 
 	for {
+		if ctx.Err() != nil {
+			break
+		}
 		sort.Slice(shortlist, func(i, j int) bool {
 			return nodeid.Less(shortlist[i].ID, shortlist[j].ID, key)
 		})
@@ -225,6 +241,7 @@ func IterativeLookupValue(ctx context.Context, rt *RoutingTable, key nodeid.ID, 
 			res.RPCs++
 
 			if r.res.Err != nil {
+				failed[r.contact.ID] = true
 				res.Errors++
 				if isTimeout(r.res.Err) {
 					res.Timeouts++
@@ -243,7 +260,7 @@ func IterativeLookupValue(ctx context.Context, rt *RoutingTable, key nodeid.ID, 
 			}
 
 			for _, nc := range r.res.Contacts {
-				if nc.ID == rt.Self() {
+				if nc.ID == rt.Self() || failed[nc.ID] {
 					continue
 				}
 				if !containsContact(shortlist, nc.ID) {
@@ -264,8 +281,8 @@ func IterativeLookupValue(ctx context.Context, rt *RoutingTable, key nodeid.ID, 
 		sort.Slice(shortlist, func(i, j int) bool {
 			return nodeid.Less(shortlist[i].ID, shortlist[j].ID, key)
 		})
-		if len(shortlist) > 2*rt.K() {
-			shortlist = shortlist[:2*rt.K()]
+		if len(shortlist) > 256*rt.K() {
+			shortlist = shortlist[:256*rt.K()]
 		}
 	}
 
@@ -273,4 +290,13 @@ func IterativeLookupValue(ctx context.Context, rt *RoutingTable, key nodeid.ID, 
 	res.DurationMS = res.Finished.Sub(res.Started).Milliseconds()
 	res.Iterations = len(res.Trace)
 	return nil, res
+}
+
+func newLookupResult(rt *RoutingTable, target nodeid.ID, kind string, started time.Time) *LookupResult {
+	var id [16]byte
+	_, err := rand.Read(id[:])
+	if err != nil {
+		panic(err)
+	}
+	return &LookupResult{LookupID: hex.EncodeToString(id[:]), Initiator: rt.Self().String(), Kind: kind, Target: target, Started: started}
 }

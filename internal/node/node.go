@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -23,29 +24,45 @@ import (
 )
 
 type Node struct {
-	ID       nodeid.ID
-	Identity *identity.Identity
-	RT       *dht.RoutingTable
-	RPC      *rpc.Manager
-	Codec    serialization.Codec
-	Config   *config.Config
+	forwarded  atomic.Uint64
+	stopOnce   sync.Once
+	stopCh     chan struct{}
+	runDone    chan struct{}
+	runStarted atomic.Bool
+	runWG      sync.WaitGroup
+	ID         nodeid.ID
+	Identity   *identity.Identity
+	RT         *dht.RoutingTable
+	RPC        *rpc.Manager
+	Codec      serialization.Codec
+	Config     *config.Config
 
+	joining       atomic.Bool
 	listener      net.Listener
 	listenerReady chan struct{}
 
-	mu      sync.Mutex
-	lookups []*dht.LookupResult
+	sequenceMu sync.Mutex
+	mu         sync.Mutex
+	lookups    []*dht.LookupResult
 
 	Store        *records.Store
 	ownedRecords map[nodeid.ID]*records.NodeRecord
 
-	Tunnels *tunnel.Manager
+	Tunnels       *tunnel.Manager
+	RelayProfiler *RelayProfiler
+
+	sendMu  sync.Mutex
+	recvMu  sync.Mutex
+	seenApp map[string]bool
 	AppMu   sync.Mutex
 	AppRecv []string
 	AppSent []string
 }
 
 func New(cfg *config.Config) (*Node, error) {
+	if err := cfg.Validate(); err != nil {
+		return nil, err
+	}
 	id, err := identity.LoadOrCreate(cfg.Node.StateDir)
 	if err != nil {
 		return nil, err
@@ -54,7 +71,9 @@ func New(cfg *config.Config) (*Node, error) {
 	rt := dht.NewRoutingTable(id.NodeID(), cfg.DHT.K)
 
 	n := &Node{
+		stopCh: make(chan struct{}), runDone: make(chan struct{}),
 		ID:            id.NodeID(),
+		seenApp:       make(map[string]bool),
 		Identity:      id,
 		RT:            rt,
 		Codec:         codec,
@@ -63,12 +82,31 @@ func New(cfg *config.Config) (*Node, error) {
 		ownedRecords:  make(map[nodeid.ID]*records.NodeRecord),
 		listenerReady: make(chan struct{}),
 		Tunnels:       tunnel.NewManager(),
+		RelayProfiler: NewRelayProfiler(),
 	}
+
+	n.joining.Store(true)
+	log.Printf("node %s: RelayStrategy = %s", n.ID, n.Config.DHT.RelayStrategy)
+
 	n.RPC = rpc.NewManagerWithWriteTimeout(id, codec, n.handleRPC, cfg.Node.ReadTimeout, cfg.Node.WriteTimeout)
+	if cfg.Protocol.MaxFramePayload > 0 {
+		n.RPC.SetMaxPayload(uint32(cfg.Protocol.MaxFramePayload))
+	}
 	return n, nil
 }
 
 func (n *Node) Run(ctx context.Context) error {
+	n.runStarted.Store(true)
+	ctx, cancel := context.WithCancel(ctx)
+	defer func() { cancel(); n.runWG.Wait(); close(n.runDone) }()
+	go func() {
+		select {
+		case <-n.stopCh:
+			cancel()
+		case <-ctx.Done():
+		}
+	}()
+
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", n.Config.Node.Port))
 	if err != nil {
 		close(n.listenerReady)
@@ -96,9 +134,15 @@ func (n *Node) Run(ctx context.Context) error {
 		}
 	}
 
-	go n.refreshLoop(ctx)
-	go n.maintenanceLoop(ctx)
-	go n.experimentLoop(ctx)
+	n.joining.Store(false)
+	if err := n.publishSelfRecord(ctx); err != nil {
+		log.Printf("node %s: publish self record: %v", n.ID, err)
+	}
+
+	for _, loop := range []func(context.Context){n.refreshLoop, n.maintenanceLoop, n.experimentLoop} {
+		n.runWG.Add(1)
+		go func(loop func(context.Context)) { defer n.runWG.Done(); loop(ctx) }(loop)
+	}
 
 	<-ctx.Done()
 	n.RPC.Close()
@@ -120,21 +164,28 @@ func (n *Node) refreshLoop(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
+			for _, addr := range n.Config.Bootstrap.Peers {
+				if ctx.Err() == nil {
+					_ = n.bootstrapOne(ctx, addr)
+				}
+			}
+			_, _ = n.Lookup(ctx, n.ID)
 			var target nodeid.ID
 			_, _ = rand.Read(target[:])
-
 			res, err := n.Lookup(ctx, target)
 			if err != nil {
-				log.Printf("node %s: refresh lookup error: %v", n.ID, err)
 				continue
 			}
-			log.Printf("node %s: refresh lookup target=%x... iterations=%d rpcs=%d closest=%d",
-				n.ID, target[:4], res.Iterations, res.RPCs, len(res.Closest))
+			log.Printf("node %s: refresh lookup target=%x... iterations=%d rpcs=%d",
+				n.ID, target[:4], res.Iterations, res.RPCs)
 		}
 	}
 }
 
 func (n *Node) Addr() string {
+	if n.Config.Node.AdvertiseAddress != "" {
+		return n.Config.Node.AdvertiseAddress
+	}
 	<-n.listenerReady
 	if n.listener == nil {
 		return fmt.Sprintf("127.0.0.1:%d", n.Config.Node.Port)
@@ -154,9 +205,11 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 	case protocol.FramePing:
 		var m rpc.PingRequest
 		if len(req.Payload) > 0 {
-			_ = n.Codec.Unmarshal(req.Payload, &m)
+			if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
+				return nil, err
+			}
 		}
-		if m.Addr != "" {
+		if m.Addr != "" && !n.joining.Load() {
 			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
 		}
 		out, _ := n.Codec.Marshal(rpc.PingResponse{})
@@ -167,7 +220,7 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
 			return nil, err
 		}
-		if m.Addr != "" {
+		if m.Addr != "" && !n.joining.Load() {
 			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
 		}
 		target, err := nodeid.FromBytes(m.Target)
@@ -179,10 +232,7 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		for _, c := range closest {
 			wire = append(wire, rpc.ContactWire{NodeID: c.ID[:], Address: c.Address})
 		}
-		out, err := n.Codec.Marshal(rpc.FindNodeResponse{Contacts: wire})
-		if err != nil {
-			return nil, err
-		}
+		out, _ := n.Codec.Marshal(rpc.FindNodeResponse{Contacts: wire})
 		return &protocol.Frame{Type: protocol.FrameFindNodeResponse, Payload: out}, nil
 
 	case protocol.FrameStoreRequest:
@@ -199,16 +249,11 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 			return nil, err
 		}
 		if rec.DHTKey() != key {
-			return nil, fmt.Errorf("store: key %s does not match record DHTKey %s", key, rec.DHTKey())
-		}
-		if err := rec.Validate(); err != nil {
-			return nil, fmt.Errorf("store: invalid record: %w", err)
+			return nil, fmt.Errorf("store: key mismatch")
 		}
 		err = n.Store.Put(key, &rec)
 		success := (err == nil)
-		if errors.Is(err, records.ErrSequenceRollback) {
-			success = true
-		}
+
 		out, _ := n.Codec.Marshal(rpc.StoreResponse{Success: success})
 		return &protocol.Frame{Type: protocol.FrameStoreResponse, Payload: out}, nil
 
@@ -217,7 +262,7 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
 			return nil, err
 		}
-		if m.Addr != "" {
+		if m.Addr != "" && !n.joining.Load() {
 			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
 		}
 		key, err := nodeid.FromBytes(m.Key)
@@ -261,6 +306,9 @@ func (n *Node) bootstrapOne(ctx context.Context, addr string) error {
 		remote, err := n.RPC.DialUnverified(ctx, addr)
 		if err == nil {
 			c := &dht.Contact{ID: remote, Address: addr, LastSeen: time.Now()}
+			if err := n.ping(ctx, c); err != nil {
+				return err
+			}
 			if err := n.addContactWithEviction(ctx, c); err != nil {
 				return err
 			}
@@ -269,7 +317,7 @@ func (n *Node) bootstrapOne(ctx context.Context, addr string) error {
 		}
 		lastErr = err
 	}
-	return fmt.Errorf("bootstrap %s failed after retries: %w", addr, lastErr)
+	return fmt.Errorf("bootstrap %s failed: %w", addr, lastErr)
 }
 
 func (n *Node) AddContactForTest(ctx context.Context, id nodeid.ID, addr string) error {
@@ -301,10 +349,7 @@ func (n *Node) ping(ctx context.Context, c *dht.Contact) error {
 }
 
 func (n *Node) findNodeRPC(ctx context.Context, c *dht.Contact, target nodeid.ID) ([]*dht.Contact, error) {
-	payload, err := n.Codec.Marshal(rpc.FindNodeRequest{Target: target[:], Addr: n.Addr()})
-	if err != nil {
-		return nil, err
-	}
+	payload, _ := n.Codec.Marshal(rpc.FindNodeRequest{Target: target[:], Addr: n.Addr()})
 	resp, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{Version: 1, Type: protocol.FrameFindNodeRequest, Payload: payload})
 	if err != nil {
 		return nil, err
@@ -336,7 +381,9 @@ func (n *Node) Lookup(ctx context.Context, target nodeid.ID) (*dht.LookupResult,
 	}
 	res := dht.IterativeLookup(ctx, n.RT, target, find)
 	n.mu.Lock()
-	n.lookups = append(n.lookups, res)
+	snapshot := *res
+	snapshot.Contacts = nil
+	n.lookups = append(n.lookups, &snapshot)
 	n.mu.Unlock()
 	return res, nil
 }
@@ -356,21 +403,38 @@ func (n *Node) Lookups() []*dht.LookupResult {
 func (n *Node) PutRecord(ctx context.Context, rec *records.NodeRecord) error {
 	key := rec.DHTKey()
 	if err := n.Store.Put(key, rec); err != nil {
-		if !errors.Is(err, records.ErrSequenceRollback) {
-			return fmt.Errorf("local store: %w", err)
-		}
-		log.Printf("node %s: local store has newer record for key %s (attempted seq=%d)",
-			n.ID, key, rec.Seq)
+		return fmt.Errorf("local store: %w", err)
 	}
-
-	closest := n.RT.Closest(key, n.Config.DHT.Replication)
+	lookup, err := n.Lookup(ctx, key)
+	if err != nil {
+		return err
+	}
+	closest := append([]*dht.Contact(nil), lookup.Contacts...)
+	closest = append(closest, &dht.Contact{ID: n.ID, Address: n.Addr()})
+	sort.Slice(closest, func(i, j int) bool { return nodeid.Less(closest[i].ID, closest[j].ID, key) })
+	available := make([]*dht.Contact, 0, 3)
+	for _, c := range closest {
+		if c.ID == n.ID || n.ping(ctx, c) == nil {
+			available = append(available, c)
+			if len(available) == 3 {
+				break
+			}
+		}
+	}
+	closest = available
+	if len(closest) < 3 {
+		return errors.New("three available holders required")
+	}
 	recBytes, _ := n.Codec.Marshal(rec)
 	reqPayload, _ := n.Codec.Marshal(rpc.StoreRequest{Key: key[:], Record: recBytes})
 
 	var successCount int32
 	var wg sync.WaitGroup
-
 	for _, c := range closest {
+		if c.ID == n.ID {
+			atomic.AddInt32(&successCount, 1)
+			continue
+		}
 		wg.Add(1)
 		go func(target *dht.Contact) {
 			defer wg.Done()
@@ -388,22 +452,27 @@ func (n *Node) PutRecord(ctx context.Context, rec *records.NodeRecord) error {
 		}(c)
 	}
 	wg.Wait()
-
-	required := 2
-	if len(closest)+1 < required {
-		required = len(closest) + 1
+	selected := make([]string, 0, len(closest))
+	for _, c := range closest {
+		selected = append(selected, c.ID.String())
 	}
-	if int(successCount)+1 < required {
-		return fmt.Errorf("replication failed: got %d confirmations, required %d", successCount+1, required)
+	log.Printf("[DHT_STORE] key=%s selected=%v confirmations=%d", key, selected, successCount)
+	if successCount < 2 {
+		return fmt.Errorf("replication: %d confirmations, need 2", successCount)
 	}
 	return nil
 }
 
-func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecord, error) {
-	if rec, ok := n.Store.Get(key); ok {
-		return rec, nil
-	}
+func (n *Node) PublishRecord(ctx context.Context, rec *records.NodeRecord) error {
+	n.mu.Lock()
+	n.ownedRecords[rec.DHTKey()] = records.Clone(rec)
+	n.mu.Unlock()
+	return n.PutRecord(ctx, rec)
+}
 
+func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecord, error) {
+	best, _ := n.Store.Get(key)
+	var bestMu sync.Mutex
 	findFunc := func(ctx context.Context, c *dht.Contact, k nodeid.ID) dht.FindValueResult {
 		payload, _ := n.Codec.Marshal(rpc.FindValueRequest{Key: k[:], Addr: n.Addr()})
 		resp, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{
@@ -412,15 +481,26 @@ func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecor
 		if err != nil {
 			return dht.FindValueResult{Err: err}
 		}
-		if resp.Type == protocol.FrameError {
-			return dht.FindValueResult{Err: fmt.Errorf("remote error")}
-		}
-
 		var m rpc.FindValueResponse
 		if err := n.Codec.Unmarshal(resp.Payload, &m); err != nil {
 			return dht.FindValueResult{Err: err}
 		}
 		if len(m.Record) > 0 {
+			var candidate records.NodeRecord
+			if err := n.Codec.Unmarshal(m.Record, &candidate); err != nil {
+				return dht.FindValueResult{Err: err}
+			}
+			if err := candidate.Validate(); err != nil {
+				return dht.FindValueResult{Err: err}
+			}
+			if candidate.DHTKey() != key {
+				return dht.FindValueResult{Err: errors.New("key mismatch")}
+			}
+			bestMu.Lock()
+			if best == nil || records.Compare(&candidate, best) > 0 {
+				best = records.Clone(&candidate)
+			}
+			bestMu.Unlock()
 			return dht.FindValueResult{Record: m.Record}
 		}
 		var contacts []*dht.Contact
@@ -432,32 +512,17 @@ func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecor
 		}
 		return dht.FindValueResult{Contacts: contacts}
 	}
-
-	recordBytes, _ := dht.IterativeLookupValue(ctx, n.RT, key, findFunc)
-	if recordBytes == nil {
-		return nil, fmt.Errorf("record not found")
+	_, trace := dht.IterativeLookupValue(ctx, n.RT, key, findFunc)
+	n.mu.Lock()
+	n.lookups = append(n.lookups, trace)
+	n.mu.Unlock()
+	if best == nil {
+		return nil, errors.New("record not found")
 	}
-
-	var rec records.NodeRecord
-	if err := n.Codec.Unmarshal(recordBytes, &rec); err != nil {
-		return nil, fmt.Errorf("invalid record format: %w", err)
+	if err := n.Store.Put(key, best); err != nil {
+		return nil, err
 	}
-	if err := rec.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid record: %w", err)
-	}
-	if rec.DHTKey() != key {
-		return nil, fmt.Errorf("record key mismatch: got %s, want %s", rec.DHTKey(), key)
-	}
-
-	_ = n.Store.Put(key, &rec)
-	return &rec, nil
-}
-
-func (n *Node) Stop() {
-	n.RPC.Close()
-	if n.listener != nil {
-		_ = n.listener.Close()
-	}
+	return best, nil
 }
 
 func (n *Node) ResolveAlias(ctx context.Context, alias string) (*records.NodeRecord, error) {
@@ -477,11 +542,36 @@ func (n *Node) ResolveAlias(ctx context.Context, alias string) (*records.NodeRec
 	return rec, nil
 }
 
-func (n *Node) PublishRecord(ctx context.Context, rec *records.NodeRecord) error {
+func (n *Node) Stop() {
+	n.stopOnce.Do(func() { close(n.stopCh) })
+	n.RPC.Close()
+	if n.runStarted.Load() {
+		<-n.runDone
+	}
+}
+
+func (n *Node) publishSelfRecord(ctx context.Context) error {
 	n.mu.Lock()
-	n.ownedRecords[rec.DHTKey()] = rec
+	existing := records.Clone(n.ownedRecords[dhtKeyForNode(n.ID)])
 	n.mu.Unlock()
-	return n.PutRecord(ctx, rec)
+	if existing != nil {
+		return n.PutRecord(ctx, existing)
+	}
+	seq, err := n.nextRecordSequence()
+	if err != nil {
+		return err
+	}
+
+	rec := &records.NodeRecord{
+		NodeID:    n.ID,
+		PublicKey: n.Identity.PublicKey,
+		Addresses: []string{n.Addr()},
+		Seq:       seq,
+		IssuedAt:  time.Now().Unix(),
+		ExpiresAt: time.Now().Add(n.recordTTL()).Unix(),
+	}
+	rec.Sign(n.Identity)
+	return n.PublishRecord(ctx, rec)
 }
 
 func (n *Node) maintenanceLoop(ctx context.Context) {
@@ -489,43 +579,39 @@ func (n *Node) maintenanceLoop(ctx context.Context) {
 	if ttl <= 0 {
 		ttl = 180 * time.Second
 	}
-	maxRepublish := ttl / 2
 	republishInterval := n.Config.DHT.RepublishInterval
-	if republishInterval <= 0 || republishInterval > maxRepublish {
-		republishInterval = maxRepublish
+	if republishInterval <= 0 || republishInterval > ttl/2 {
+		republishInterval = ttl / 2
 	}
-	if republishInterval <= 0 {
-		republishInterval = 60 * time.Second
-	}
-
 	cleanupTicker := time.NewTicker(10 * time.Second)
 	republishTicker := time.NewTicker(republishInterval)
 	defer cleanupTicker.Stop()
 	defer republishTicker.Stop()
-
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case <-cleanupTicker.C:
-			deleted := n.Store.Cleanup()
-			if deleted > 0 {
-				log.Printf("node %s: TTL cleanup removed %d records", n.ID, deleted)
-			}
+			n.Store.Cleanup()
 			n.Tunnels.Cleanup(time.Now())
 		case <-republishTicker.C:
 			n.mu.Lock()
 			recordsToRepublish := make([]*records.NodeRecord, 0, len(n.ownedRecords))
-			for _, rec := range n.ownedRecords {
-				if rec.ExpiresAt <= time.Now().Unix() {
-					rec.ExpiresAt = time.Now().Add(ttl).Unix()
-					rec.Seq++
-					rec.Sign(n.Identity)
+			for key, rec := range n.ownedRecords {
+				updated := records.Clone(rec)
+				updated.IssuedAt = time.Now().Unix()
+				updated.ExpiresAt = time.Now().Add(ttl).Unix()
+				seq, err := n.nextRecordSequence()
+				if err != nil {
+					log.Printf("sequence persistence failed: %v", err)
+					continue
 				}
-				recordsToRepublish = append(recordsToRepublish, rec)
+				updated.Seq = seq
+				updated.Sign(n.Identity)
+				n.ownedRecords[key] = updated
+				recordsToRepublish = append(recordsToRepublish, updated)
 			}
 			n.mu.Unlock()
-
 			for _, rec := range recordsToRepublish {
 				go func(r *records.NodeRecord) {
 					repCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
@@ -553,6 +639,11 @@ func (n *Node) experimentLoop(ctx context.Context) {
 	case <-time.After(delay):
 	}
 
+	if err := n.publishSelfRecord(ctx); err != nil {
+		log.Printf("node %s: experiment republish: %v", n.ID, err)
+	}
+	time.Sleep(2 * time.Second)
+
 	n.dumpMetricsSafe()
 
 	targets := make([]nodeid.ID, 0, len(n.Config.Experiment.Targets))
@@ -565,17 +656,61 @@ func (n *Node) experimentLoop(ctx context.Context) {
 		targets = append(targets, id)
 	}
 
-	for _, target := range targets {
-		lookupCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
-		res, err := n.Lookup(lookupCtx, target)
-		cancel()
-		if err != nil {
-			log.Printf("node %s: experiment lookup %s failed: %v", n.ID, target, err)
-			continue
-		}
-		log.Printf("node %s: experiment lookup target=%s iterations=%d rpcs=%d",
-			n.ID, target, res.Iterations, res.RPCs)
+	repeats := n.Config.Experiment.Repeats
+	if repeats == 0 {
+		repeats = 1
 	}
+	for sample := 0; sample < repeats; sample++ {
+		for _, target := range targets {
+			started := time.Now()
+			lookupCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
+			res, err := n.Lookup(lookupCtx, target)
+			cancel()
+			if err == nil {
+				log.Printf("node %s: experiment lookup target=%s iterations=%d rpcs=%d",
+					n.ID, target, res.Iterations, res.RPCs)
+			}
 
+			log.Printf("[EXPERIMENT] sample=%d operation=lookup success=%t duration_ms=%d", sample, err == nil, time.Since(started).Milliseconds())
+			if target == n.ID {
+				continue
+			}
+			started = time.Now()
+			msgCtx, msgCancel := context.WithTimeout(ctx, 15*time.Second)
+			err = n.SendMessage(msgCtx, target, n.experimentMessage())
+			msgCancel()
+			log.Printf("[EXPERIMENT] sample=%d operation=message success=%t duration_ms=%d", sample, err == nil, time.Since(started).Milliseconds())
+			if err != nil {
+				log.Printf("node %s: experiment send to %s failed: %v", n.ID, target[:8], err)
+			}
+		}
+
+		n.dumpMetricsSafe()
+		interval := n.Config.Experiment.Interval
+		if interval <= 0 {
+			interval = time.Second
+		}
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(interval):
+		}
+	}
 	n.dumpMetricsSafe()
 }
+
+func (n *Node) recordTTL() time.Duration {
+	if n.Config.DHT.TTLSeconds <= 0 {
+		return 180 * time.Second
+	}
+	return time.Duration(n.Config.DHT.TTLSeconds) * time.Second
+}
+
+func (n *Node) experimentMessage() string {
+	if n.Config.Experiment.Message != "" {
+		return n.Config.Experiment.Message
+	}
+	return "pcap-control-secret-17nov2026"
+}
+
+func (n *Node) ForwardedFrames() uint64 { return n.forwarded.Load() }

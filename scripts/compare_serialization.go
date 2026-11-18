@@ -19,7 +19,7 @@ func main() {
 	rec := SampleRecord{
 		NodeID:    "abc123",
 		Addresses: []string{"10.0.0.1:9000", "10.0.0.2:9000"},
-		IssuedAt:  time.Now(),
+		IssuedAt:  time.Unix(1700000000, 0).UTC(),
 		Signature: make([]byte, 64),
 	}
 	jb, _ := json.Marshal(rec)

@@ -1,0 +1,14 @@
+?   	p2p-overlay/cmd/node	[no test files]
+?   	p2p-overlay/internal/config	[no test files]
+?   	p2p-overlay/internal/dht	[no test files]
+?   	p2p-overlay/internal/identity	[no test files]
+ok  	p2p-overlay/internal/node	2.486s
+?   	p2p-overlay/internal/nodeid	[no test files]
+?   	p2p-overlay/internal/protocol	[no test files]
+?   	p2p-overlay/internal/protocol/serialization	[no test files]
+?   	p2p-overlay/internal/records	[no test files]
+?   	p2p-overlay/internal/rpc	[no test files]
+?   	p2p-overlay/internal/transport	[no test files]
+?   	p2p-overlay/internal/tunnel	[no test files]
+?   	p2p-overlay/scripts	[no test files]
+ok  	p2p-overlay/tests	64.397s

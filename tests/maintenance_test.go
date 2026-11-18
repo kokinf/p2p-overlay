@@ -9,7 +9,8 @@ import (
 )
 
 func TestTTLCleanupAndRollback(t *testing.T) {
-	store := records.NewStore()
+	now := time.Now()
+	store := records.NewStoreWithClock(func() time.Time { return now })
 	id, _ := identity.LoadOrCreate(t.TempDir())
 
 	rec := &records.NodeRecord{
@@ -18,7 +19,7 @@ func TestTTLCleanupAndRollback(t *testing.T) {
 		Addresses: []string{"127.0.0.1:9000"},
 		Seq:       1,
 		IssuedAt:  time.Now().Unix(),
-		ExpiresAt: time.Now().Add(1 * time.Second).Unix(),
+		ExpiresAt: now.Add(time.Minute).Unix(),
 	}
 	rec.Sign(id)
 	key := rec.DHTKey()
@@ -29,7 +30,7 @@ func TestTTLCleanupAndRollback(t *testing.T) {
 		t.Fatal("record should be found before TTL")
 	}
 
-	time.Sleep(1100 * time.Millisecond)
+	now = now.Add(61 * time.Second)
 
 	if _, ok := store.Get(key); ok {
 		t.Fatal("expired record should not be returned")

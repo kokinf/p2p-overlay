@@ -1,0 +1,7 @@
+{
+  "attempts": 60,
+  "successful": 60,
+  "restricted_positive_pairs": 2,
+  "restricted_blocked_pairs": 1,
+  "netem_configurations": 2
+}

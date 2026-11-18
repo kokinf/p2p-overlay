@@ -1,0 +1,26 @@
+[
+  {
+    "file": "acceptance-final-suite.zip",
+    "sha256": "203542f6d1e58b3d32fc52f7ab15fbd48b322dc4ba8c2d37ab8d8ba044329fcc",
+    "bytes": 2290166,
+    "files": 608
+  },
+  {
+    "file": "capture-delivery.zip",
+    "sha256": "1495a0c0aff39d2cf17d9bd2d7ea6e0ba42d1a7c9fd743334f02dd680ebda4a9",
+    "bytes": 325156,
+    "files": 3
+  },
+  {
+    "file": "network-lab-final.zip",
+    "sha256": "c21e333ae38fa3ed135e3b6dbe020d7df5a97e2b50a3b2d660e86a6cb8401a7b",
+    "bytes": 82348,
+    "files": 82
+  },
+  {
+    "file": "files-validation.zip",
+    "sha256": "822d34ab7bebbf6fcd665041ad54324eae248b3e0915cf4d3912c03b0b2f106e",
+    "bytes": 30965,
+    "files": 7
+  }
+]

@@ -93,6 +93,9 @@ func (r *NodeRecord) Validate() error {
 		return fmt.Errorf("invalid number of addresses: %d", len(r.Addresses))
 	}
 	for _, addr := range r.Addresses {
+		if len(addr) > 255 {
+			return errors.New("address exceeds canonical length limit")
+		}
 		if err := validateAddress(addr); err != nil {
 			return fmt.Errorf("invalid address %q: %w", addr, err)
 		}

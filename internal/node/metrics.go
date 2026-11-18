@@ -12,22 +12,30 @@ import (
 )
 
 type NodeMetrics struct {
-	NodeID    string               `json:"node_id"`
-	Address   string               `json:"address"`
-	Buckets   []dht.BucketSnapshot `json:"buckets"`
-	Lookups   []*dht.LookupResult  `json:"lookups"`
-	StoreSize int                  `json:"store_size"`
-	Timestamp time.Time            `json:"timestamp"`
+	RelayProfiles  map[string]RelayStats `json:"relay_profiles"`
+	TunnelForwards uint64                `json:"tunnel_forwards"`
+	NodeID         string                `json:"node_id"`
+	Address        string                `json:"address"`
+	Buckets        []dht.BucketSnapshot  `json:"buckets"`
+	Lookups        []*dht.LookupResult   `json:"lookups"`
+	StoreSize      int                   `json:"store_size"`
+	Timestamp      time.Time             `json:"timestamp"`
 }
 
 func (n *Node) DumpMetrics(path string) error {
+	profiles := make(map[string]RelayStats)
+	for id, s := range n.RelayProfiler.Snapshot() {
+		profiles[id.String()] = s
+	}
 	m := NodeMetrics{
-		NodeID:    n.ID.String(),
-		Address:   n.Addr(),
-		Buckets:   n.RT.Snapshot(),
-		Lookups:   n.Lookups(),
-		StoreSize: n.Store.Size(),
-		Timestamp: time.Now(),
+		RelayProfiles:  profiles,
+		TunnelForwards: n.ForwardedFrames(),
+		NodeID:         n.ID.String(),
+		Address:        n.Addr(),
+		Buckets:        n.RT.Snapshot(),
+		Lookups:        n.Lookups(),
+		StoreSize:      n.Store.Size(),
+		Timestamp:      time.Now(),
 	}
 	data, err := json.MarshalIndent(m, "", "  ")
 	if err != nil {

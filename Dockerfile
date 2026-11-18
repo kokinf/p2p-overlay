@@ -9,6 +9,9 @@ RUN go build -o /node ./cmd/node
 
 FROM alpine:latest
 WORKDIR /app
+
+RUN apk add --no-cache iproute2 tcpdump
+
 COPY --from=builder /node /app/node
 
 ENTRYPOINT ["/app/node"]

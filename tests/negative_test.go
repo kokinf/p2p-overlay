@@ -2,6 +2,7 @@ package tests
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"p2p-overlay/internal/protocol"
@@ -29,5 +30,17 @@ func TestPartialHeader(t *testing.T) {
 	_, err := protocol.DecodeFrameHeader(header)
 	if err == nil {
 		t.Fatal("expected error for partial header")
+	}
+}
+
+func TestConfiguredPayloadLimitBeforeRead(t *testing.T) {
+	header := make([]byte, protocol.FrameHeaderSize)
+	header[0] = 1
+	header[1] = byte(protocol.FramePing)
+	header[23] = 9
+	decoder := protocol.NewStreamDecoder(bytes.NewReader(header))
+	decoder.MaxPayload = 8
+	if _, err := decoder.ReadFrame(); err == nil || !strings.Contains(err.Error(), "configured payload limit") {
+		t.Fatalf("length not rejected before payload read: %v", err)
 	}
 }

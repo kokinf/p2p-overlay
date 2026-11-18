@@ -59,6 +59,7 @@ func TestTunnelDeliveryAndRecovery(t *testing.T) {
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
 		}
+		tmp.Seq = uint64(time.Now().UnixNano())
 		tmp.Sign(n.Identity)
 		n.PublishRecord(context.Background(), &tmp)
 	}

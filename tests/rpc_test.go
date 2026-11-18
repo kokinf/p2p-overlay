@@ -3,6 +3,8 @@ package tests
 import (
 	"context"
 	"net"
+	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -77,5 +79,70 @@ func TestRPCWrongIdentityRejected(t *testing.T) {
 		&protocol.Frame{Version: 1, Type: protocol.FramePing})
 	if err == nil {
 		t.Fatal("expected error for id mismatch")
+	}
+}
+
+func TestRPCOverloadDoesNotTerminateService(t *testing.T) {
+	a, _ := identity.LoadOrCreate(t.TempDir())
+	b, _ := identity.LoadOrCreate(t.TempDir())
+	release := make(chan struct{})
+	entered := make(chan struct{}, 64)
+	handler := func(ctx context.Context, _ nodeid.ID, _ *protocol.Frame) (*protocol.Frame, error) {
+		select {
+		case entered <- struct{}{}:
+		default:
+		}
+		select {
+		case <-release:
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+		return &protocol.Frame{Type: protocol.FramePong}, nil
+	}
+	client := rpc.NewManager(a, serialization.MsgPackCodec{}, nil, 5*time.Second)
+	server := rpc.NewManager(b, serialization.MsgPackCodec{}, handler, 5*time.Second)
+	defer client.Close()
+	defer server.Close()
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ln.Close()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go server.Serve(ctx, ln)
+	var wg sync.WaitGroup
+	errs := make(chan error, 64)
+	for i := 0; i < 64; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			_, err := client.Call(ctx, b.NodeID(), ln.Addr().String(), &protocol.Frame{Type: protocol.FramePing})
+			errs <- err
+		}()
+	}
+	for i := 0; i < 64; i++ {
+		select {
+		case <-entered:
+		case <-time.After(3 * time.Second):
+			close(release)
+			t.Fatal("handlers did not fill capacity")
+		}
+	}
+	_, err = client.Call(ctx, b.NodeID(), ln.Addr().String(), &protocol.Frame{Type: protocol.FramePing})
+	if err == nil || !strings.Contains(err.Error(), "capacity") {
+		close(release)
+		t.Fatalf("overload not rejected: %v", err)
+	}
+	close(release)
+	wg.Wait()
+	close(errs)
+	for err := range errs {
+		if err != nil {
+			t.Errorf("pending request failed: %v", err)
+		}
+	}
+	if _, err = client.Call(ctx, b.NodeID(), ln.Addr().String(), &protocol.Frame{Type: protocol.FramePing}); err != nil {
+		t.Fatalf("service did not recover: %v", err)
 	}
 }

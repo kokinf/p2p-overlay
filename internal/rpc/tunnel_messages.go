@@ -22,6 +22,7 @@ type TunnelBuildResponse struct {
 	Accepted       bool   `msgpack:"accepted"`
 	Reason         string `msgpack:"reason,omitempty"`
 	ReceiverID     []byte `msgpack:"receiver_id,omitempty"`
+	ReceiverSig    []byte `msgpack:"receiver_sig"`
 	ReceiverE2EPub []byte `msgpack:"receiver_e2e_pub,omitempty"`
 }
 
@@ -34,6 +35,7 @@ type TunnelDataRequest struct {
 }
 
 type TunnelAckResponse struct {
+	Tag      []byte `msgpack:"tag"`
 	TunnelID []byte `msgpack:"tunnel_id"`
 	Seq      uint64 `msgpack:"seq"`
 	Success  bool   `msgpack:"success"`
@@ -46,10 +48,26 @@ type TunnelCloseRequest struct {
 
 type AppMessageRequest struct {
 	MessageID []byte `msgpack:"message_id"`
+	Type      string `msgpack:"type"` // text, file_meta, file_block
 	Payload   []byte `msgpack:"payload"`
 }
 
 type AppAckResponse struct {
 	MessageID []byte `msgpack:"message_id"`
 	Success   bool   `msgpack:"success"`
+}
+
+type FileMetadataRequest struct {
+	FileID      []byte `msgpack:"file_id"`
+	Filename    string `msgpack:"filename"`
+	Size        int64  `msgpack:"size"`
+	SHA256      []byte `msgpack:"sha256"`
+	BlockSize   int    `msgpack:"block_size"`
+	TotalBlocks int    `msgpack:"total_blocks"`
+}
+
+type FileBlockRequest struct {
+	FileID   []byte `msgpack:"file_id"`
+	BlockIdx int    `msgpack:"block_idx"`
+	Data     []byte `msgpack:"data"`
 }
