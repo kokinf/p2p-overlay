@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"p2p-overlay/internal/nodeid"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -41,8 +42,10 @@ type TunnelConfig struct {
 }
 
 type BootstrapConfig struct {
-	Scheme string   `yaml:"scheme"`
-	Peers  []string `yaml:"peers"`
+	Pins          map[string]string `yaml:"pins"`
+	AllowUnpinned bool              `yaml:"allow_unpinned"`
+	Scheme        string            `yaml:"scheme"`
+	Peers         []string          `yaml:"peers"`
 }
 
 type ExperimentConfig struct {
@@ -68,7 +71,13 @@ func (f FileConfig) Directory() string {
 	return f.DownloadDir
 }
 
+type AdmissionConfig struct {
+	Mode    string   `yaml:"mode"`
+	NodeIDs []string `yaml:"node_ids"`
+}
+
 type Config struct {
+	Admission  AdmissionConfig  `yaml:"admission"`
 	Files      FileConfig       `yaml:"files"`
 	Tunnel     TunnelConfig     `yaml:"tunnel"`
 	Node       NodeConfig       `yaml:"node"`
@@ -91,6 +100,27 @@ func Load(path string) (*Config, error) {
 }
 
 func (c *Config) Validate() error {
+	if c.Admission.Mode != "" && c.Admission.Mode != "open" && c.Admission.Mode != "allowlist" {
+		return fmt.Errorf("admission mode must be open or allowlist")
+	}
+	if c.Admission.Mode == "allowlist" && len(c.Admission.NodeIDs) == 0 {
+		return fmt.Errorf("empty admission allowlist")
+	}
+	for _, id := range c.Admission.NodeIDs {
+		if _, err := nodeid.ParseHex(id); err != nil {
+			return fmt.Errorf("invalid admission NodeID: %w", err)
+		}
+	}
+	for addr, id := range c.Bootstrap.Pins {
+		if _, err := nodeid.ParseHex(id); err != nil {
+			return fmt.Errorf("invalid bootstrap pin %s: %w", addr, err)
+		}
+	}
+	for _, addr := range c.Bootstrap.Peers {
+		if _, ok := c.Bootstrap.Pins[addr]; !ok && !c.Bootstrap.AllowUnpinned {
+			return fmt.Errorf("bootstrap %s requires a NodeID pin; allow_unpinned is only for explicitly untrusted discovery", addr)
+		}
+	}
 	if c.Tunnel.MaxPerSubnet < 0 || c.Tunnel.MaxPerSubnet > 4 {
 		return fmt.Errorf("max_per_subnet must be 0..4")
 	}

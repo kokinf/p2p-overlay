@@ -31,6 +31,16 @@ func TestBootstrapAfterSeedShutdown(t *testing.T) {
 			DHT:       config.DHTConfig{K: K, Alpha: 3, Replication: 3, RefreshInterval: 5 * time.Second},
 			Bootstrap: config.BootstrapConfig{Peers: bootstrapPeers},
 		}
+		cfg.Bootstrap.AllowUnpinned = false
+		cfg.Bootstrap.Pins = make(map[string]string)
+		for _, peer := range bootstrapPeers {
+			for _, known := range nodes {
+				if known.addr == peer {
+					cfg.Bootstrap.Pins[peer] = known.n.ID.String()
+				}
+			}
+		}
+
 		n, err := node.New(cfg)
 		if err != nil {
 			t.Fatal(err)

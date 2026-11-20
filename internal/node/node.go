@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -24,18 +23,20 @@ import (
 )
 
 type Node struct {
-	forwarded  atomic.Uint64
-	stopOnce   sync.Once
-	stopCh     chan struct{}
-	runDone    chan struct{}
-	runStarted atomic.Bool
-	runWG      sync.WaitGroup
-	ID         nodeid.ID
-	Identity   *identity.Identity
-	RT         *dht.RoutingTable
-	RPC        *rpc.Manager
-	Codec      serialization.Codec
-	Config     *config.Config
+	selfPublishMu     sync.Mutex
+	selfRecordPending atomic.Bool
+	forwarded         atomic.Uint64
+	stopOnce          sync.Once
+	stopCh            chan struct{}
+	runDone           chan struct{}
+	runStarted        atomic.Bool
+	runWG             sync.WaitGroup
+	ID                nodeid.ID
+	Identity          *identity.Identity
+	RT                *dht.RoutingTable
+	RPC               *rpc.Manager
+	Codec             serialization.Codec
+	Config            *config.Config
 
 	joining       atomic.Bool
 	listener      net.Listener
@@ -89,6 +90,14 @@ func New(cfg *config.Config) (*Node, error) {
 	log.Printf("node %s: RelayStrategy = %s", n.ID, n.Config.DHT.RelayStrategy)
 
 	n.RPC = rpc.NewManagerWithWriteTimeout(id, codec, n.handleRPC, cfg.Node.ReadTimeout, cfg.Node.WriteTimeout)
+	if cfg.Admission.Mode == "allowlist" {
+		ids := make([]nodeid.ID, 0, len(cfg.Admission.NodeIDs))
+		for _, raw := range cfg.Admission.NodeIDs {
+			id, _ := nodeid.ParseHex(raw)
+			ids = append(ids, id)
+		}
+		n.RPC.SetAdmissionAllowlist(ids)
+	}
 	if cfg.Protocol.MaxFramePayload > 0 {
 		n.RPC.SetMaxPayload(uint32(cfg.Protocol.MaxFramePayload))
 	}
@@ -209,8 +218,13 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 				return nil, err
 			}
 		}
+		if m.Addr != "" {
+			if err := dht.ValidateAddress(m.Addr); err != nil {
+				return nil, err
+			}
+		}
 		if m.Addr != "" && !n.joining.Load() {
-			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
+			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now(), Verified: true, Verification: "tls_inbound_identity"})
 		}
 		out, _ := n.Codec.Marshal(rpc.PingResponse{})
 		return &protocol.Frame{Type: protocol.FramePong, Payload: out}, nil
@@ -220,8 +234,13 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
 			return nil, err
 		}
+		if m.Addr != "" {
+			if err := dht.ValidateAddress(m.Addr); err != nil {
+				return nil, err
+			}
+		}
 		if m.Addr != "" && !n.joining.Load() {
-			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
+			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now(), Verified: true, Verification: "tls_inbound_identity"})
 		}
 		target, err := nodeid.FromBytes(m.Target)
 		if err != nil {
@@ -262,8 +281,13 @@ func (n *Node) handleRPC(ctx context.Context, remote nodeid.ID, req *protocol.Fr
 		if err := n.Codec.Unmarshal(req.Payload, &m); err != nil {
 			return nil, err
 		}
+		if m.Addr != "" {
+			if err := dht.ValidateAddress(m.Addr); err != nil {
+				return nil, err
+			}
+		}
 		if m.Addr != "" && !n.joining.Load() {
-			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now()})
+			_, _ = n.RT.AddOrUpdate(&dht.Contact{ID: remote, Address: m.Addr, LastSeen: time.Now(), Verified: true, Verification: "tls_inbound_identity"})
 		}
 		key, err := nodeid.FromBytes(m.Key)
 		if err != nil {
@@ -303,7 +327,18 @@ func (n *Node) bootstrapOne(ctx context.Context, addr string) error {
 			case <-time.After(time.Duration(attempt) * 500 * time.Millisecond):
 			}
 		}
-		remote, err := n.RPC.DialUnverified(ctx, addr)
+		var remote nodeid.ID
+		var err error
+		if pin, ok := n.Config.Bootstrap.Pins[addr]; ok {
+			remote, err = nodeid.ParseHex(pin)
+			if err == nil {
+				err = n.RPC.Connect(ctx, remote, addr)
+			}
+		} else if n.Config.Bootstrap.AllowUnpinned {
+			remote, err = n.RPC.DialUnverified(ctx, addr)
+		} else {
+			return fmt.Errorf("bootstrap identity pin required for %s", addr)
+		}
 		if err == nil {
 			c := &dht.Contact{ID: remote, Address: addr, LastSeen: time.Now()}
 			if err := n.ping(ctx, c); err != nil {
@@ -325,6 +360,17 @@ func (n *Node) AddContactForTest(ctx context.Context, id nodeid.ID, addr string)
 }
 
 func (n *Node) addContactWithEviction(ctx context.Context, c *dht.Contact) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if err := dht.ValidateAddress(c.Address); err != nil {
+		return err
+	}
+	copy := *c
+	copy.Verified = true
+	copy.Verification = "tls_outbound_rpc"
+	copy.LastSeen = time.Now()
+	c = &copy
 	lru, err := n.RT.AddOrUpdate(c)
 	if err != nil && !errors.Is(err, dht.ErrBucketFull) {
 		return err
@@ -338,14 +384,24 @@ func (n *Node) addContactWithEviction(ctx context.Context, c *dht.Contact) error
 		n.RT.Touch(lru.ID)
 		return nil
 	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	n.RT.ReplaceLRU(n.RT.BucketIndexFor(c.ID), c)
 	return nil
 }
 
 func (n *Node) ping(ctx context.Context, c *dht.Contact) error {
 	payload, _ := n.Codec.Marshal(rpc.PingRequest{Addr: n.Addr()})
-	_, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{Version: 1, Type: protocol.FramePing, Payload: payload})
-	return err
+	resp, err := n.RPC.Call(ctx, c.ID, c.Address, &protocol.Frame{Version: 1, Type: protocol.FramePing, Payload: payload})
+	if err != nil {
+		return err
+	}
+	if len(resp.Payload) > 0 {
+		var pong rpc.PingResponse
+		return n.Codec.Unmarshal(resp.Payload, &pong)
+	}
+	return nil
 }
 
 func (n *Node) findNodeRPC(ctx context.Context, c *dht.Contact, target nodeid.ID) ([]*dht.Contact, error) {
@@ -358,24 +414,15 @@ func (n *Node) findNodeRPC(ctx context.Context, c *dht.Contact, target nodeid.ID
 	if err := n.Codec.Unmarshal(resp.Payload, &m); err != nil {
 		return nil, err
 	}
-	out := make([]*dht.Contact, 0, len(m.Contacts))
-	for _, w := range m.Contacts {
-		id, err := nodeid.FromBytes(w.NodeID)
-		if err != nil || id == n.ID {
-			continue
-		}
-		out = append(out, &dht.Contact{ID: id, Address: w.Address, LastSeen: time.Now()})
-	}
-	return out, nil
+	return n.validateContacts(m.Contacts, target)
+
 }
 
 func (n *Node) Lookup(ctx context.Context, target nodeid.ID) (*dht.LookupResult, error) {
 	find := func(ctx context.Context, c *dht.Contact, target nodeid.ID) ([]*dht.Contact, error) {
 		contacts, err := n.findNodeRPC(ctx, c, target)
 		if err == nil {
-			for _, nc := range contacts {
-				_ = n.addContactWithEviction(ctx, nc)
-			}
+			_ = n.addContactWithEviction(ctx, c)
 		}
 		return contacts, err
 	}
@@ -401,66 +448,8 @@ func (n *Node) Lookups() []*dht.LookupResult {
 }
 
 func (n *Node) PutRecord(ctx context.Context, rec *records.NodeRecord) error {
-	key := rec.DHTKey()
-	if err := n.Store.Put(key, rec); err != nil {
-		return fmt.Errorf("local store: %w", err)
-	}
-	lookup, err := n.Lookup(ctx, key)
-	if err != nil {
-		return err
-	}
-	closest := append([]*dht.Contact(nil), lookup.Contacts...)
-	closest = append(closest, &dht.Contact{ID: n.ID, Address: n.Addr()})
-	sort.Slice(closest, func(i, j int) bool { return nodeid.Less(closest[i].ID, closest[j].ID, key) })
-	available := make([]*dht.Contact, 0, 3)
-	for _, c := range closest {
-		if c.ID == n.ID || n.ping(ctx, c) == nil {
-			available = append(available, c)
-			if len(available) == 3 {
-				break
-			}
-		}
-	}
-	closest = available
-	if len(closest) < 3 {
-		return errors.New("three available holders required")
-	}
-	recBytes, _ := n.Codec.Marshal(rec)
-	reqPayload, _ := n.Codec.Marshal(rpc.StoreRequest{Key: key[:], Record: recBytes})
-
-	var successCount int32
-	var wg sync.WaitGroup
-	for _, c := range closest {
-		if c.ID == n.ID {
-			atomic.AddInt32(&successCount, 1)
-			continue
-		}
-		wg.Add(1)
-		go func(target *dht.Contact) {
-			defer wg.Done()
-			cCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
-			defer cancel()
-			resp, err := n.RPC.Call(cCtx, target.ID, target.Address, &protocol.Frame{
-				Version: 1, Type: protocol.FrameStoreRequest, Payload: reqPayload,
-			})
-			if err == nil && resp.Type == protocol.FrameStoreResponse {
-				var sr rpc.StoreResponse
-				if n.Codec.Unmarshal(resp.Payload, &sr) == nil && sr.Success {
-					atomic.AddInt32(&successCount, 1)
-				}
-			}
-		}(c)
-	}
-	wg.Wait()
-	selected := make([]string, 0, len(closest))
-	for _, c := range closest {
-		selected = append(selected, c.ID.String())
-	}
-	log.Printf("[DHT_STORE] key=%s selected=%v confirmations=%d", key, selected, successCount)
-	if successCount < 2 {
-		return fmt.Errorf("replication: %d confirmations, need 2", successCount)
-	}
-	return nil
+	_, err := n.PutRecordWithReport(ctx, rec)
+	return err
 }
 
 func (n *Node) PublishRecord(ctx context.Context, rec *records.NodeRecord) error {
@@ -485,6 +474,9 @@ func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecor
 		if err := n.Codec.Unmarshal(resp.Payload, &m); err != nil {
 			return dht.FindValueResult{Err: err}
 		}
+		if len(m.Record) > 0 && len(m.Contacts) > 0 {
+			return dht.FindValueResult{Err: errors.New("ambiguous FIND_VALUE response")}
+		}
 		if len(m.Record) > 0 {
 			var candidate records.NodeRecord
 			if err := n.Codec.Unmarshal(m.Record, &candidate); err != nil {
@@ -501,15 +493,14 @@ func (n *Node) GetRecord(ctx context.Context, key nodeid.ID) (*records.NodeRecor
 				best = records.Clone(&candidate)
 			}
 			bestMu.Unlock()
+			_ = n.addContactWithEviction(ctx, c)
 			return dht.FindValueResult{Record: m.Record}
 		}
-		var contacts []*dht.Contact
-		for _, w := range m.Contacts {
-			id, _ := nodeid.FromBytes(w.NodeID)
-			if id != n.ID {
-				contacts = append(contacts, &dht.Contact{ID: id, Address: w.Address, LastSeen: time.Now()})
-			}
+		contacts, err := n.validateContacts(m.Contacts, k)
+		if err != nil {
+			return dht.FindValueResult{Err: err}
 		}
+		_ = n.addContactWithEviction(ctx, c)
 		return dht.FindValueResult{Contacts: contacts}
 	}
 	_, trace := dht.IterativeLookupValue(ctx, n.RT, key, findFunc)
@@ -550,7 +541,13 @@ func (n *Node) Stop() {
 	}
 }
 
-func (n *Node) publishSelfRecord(ctx context.Context) error {
+func (n *Node) publishSelfRecord(ctx context.Context) (err error) {
+	n.selfPublishMu.Lock()
+	defer n.selfPublishMu.Unlock()
+	defer func() { n.selfRecordPending.Store(err != nil) }()
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	n.mu.Lock()
 	existing := records.Clone(n.ownedRecords[dhtKeyForNode(n.ID)])
 	n.mu.Unlock()
@@ -585,12 +582,23 @@ func (n *Node) maintenanceLoop(ctx context.Context) {
 	}
 	cleanupTicker := time.NewTicker(10 * time.Second)
 	republishTicker := time.NewTicker(republishInterval)
+	retryTicker := time.NewTicker(time.Second)
+	defer retryTicker.Stop()
 	defer cleanupTicker.Stop()
 	defer republishTicker.Stop()
 	for {
 		select {
 		case <-ctx.Done():
 			return
+		case <-retryTicker.C:
+			if n.selfRecordPending.Load() {
+				retryCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+				err := n.publishSelfRecord(retryCtx)
+				cancel()
+				if err != nil && ctx.Err() == nil {
+					log.Printf("node %s: initial identity publication retry: %v", n.ID, err)
+				}
+			}
 		case <-cleanupTicker.C:
 			n.Store.Cleanup()
 			n.Tunnels.Cleanup(time.Now())

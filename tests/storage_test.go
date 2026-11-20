@@ -33,6 +33,11 @@ func TestReplicationAndFailure(t *testing.T) {
 				}(),
 			},
 		}
+		cfg.Bootstrap.AllowUnpinned = false
+		if len(cfg.Bootstrap.Peers) > 0 {
+			cfg.Bootstrap.Pins = map[string]string{cfg.Bootstrap.Peers[0]: nodes[0].ID.String()}
+		}
+
 		n, err := node.New(cfg)
 		if err != nil {
 			t.Fatal(err)

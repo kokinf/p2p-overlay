@@ -1,148 +1,168 @@
 {
+  "started_utc": "2026-11-19T15:33:32.1322228Z",
   "sources": [
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\config\\config.go",
-      "sha256": "FA365E6412DD7DD899CC742AF5453219121DCD858AD682BFE67C090CAED55856"
+      "sha256": "501385F272FA9759885833686D6AFC1026DC058A7DFE62F2196BA784C88A3BAB",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\config\\config.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\bucket.go",
-      "sha256": "EAEE2AC1ED9CA1CB8CB43A0EF27D4D349741CBD528B2FC00903E66180C019993"
+      "sha256": "AAC642FAFFC63547988F80D6CA92E9BEEC76A2ED17B7A15C8472B702A1BB00BB",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\config\\trust_test.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\contact.go",
-      "sha256": "9ECA4F167BAAD63686C69FC5BFE7A84858BBCEA24EF8E697FE7AB92FF339860F"
+      "sha256": "EAEE2AC1ED9CA1CB8CB43A0EF27D4D349741CBD528B2FC00903E66180C019993",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\bucket.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\lookup.go",
-      "sha256": "D1BB89282E8C4164CAD9B3793515D70FBEEEB7E755C52496032B1D75FAC2488B"
+      "sha256": "F0C10C99AF4B849EDD3621D76DE90503ECC2C26A5FAD7A15621EA046E9798B13",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\contact.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\routing_table.go",
-      "sha256": "4913AB944F2632AA9C390523B4F3EC4993D49874D35D69C9D348B2D78E17B7C8"
+      "sha256": "D1BB89282E8C4164CAD9B3793515D70FBEEEB7E755C52496032B1D75FAC2488B",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\lookup.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\identity\\canonical.go",
-      "sha256": "7FADBDC919D375A4FFBAB7597A22E53C0C29B38AA9775EFE2BA94430EAEBFD75"
+      "sha256": "4913AB944F2632AA9C390523B4F3EC4993D49874D35D69C9D348B2D78E17B7C8",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\routing_table.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\identity\\identity.go",
-      "sha256": "36E9D297A375183B8BD28F51FA7D27ED51327BAA2FD69DC61EA01D9A29289AC0"
+      "sha256": "7FADBDC919D375A4FFBAB7597A22E53C0C29B38AA9775EFE2BA94430EAEBFD75",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\identity\\canonical.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\identity\\tls.go",
-      "sha256": "EAFF4E042F15AB1822AC382277B2B05098265CC56592F50BC7778900E13607F1"
+      "sha256": "36E9D297A375183B8BD28F51FA7D27ED51327BAA2FD69DC61EA01D9A29289AC0",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\identity\\identity.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\handlers_tunnel.go",
-      "sha256": "A41D9F04C7044379D4ABA716877737479845743860127B9C9247DA936975FD7F"
+      "sha256": "EAFF4E042F15AB1822AC382277B2B05098265CC56592F50BC7778900E13607F1",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\identity\\tls.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\lru_test.go",
-      "sha256": "2BA19097C68D4A1AC33D5F5EBF10EB9A032EECD9B61913EF2FED85D3EC6BFBB5"
+      "sha256": "5BDFC0C76EC23C17D8F6A20AB1E5B45FC9B0BD7E41F7440F99B0A34036D0B962",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\contact_contract_test.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\metrics.go",
-      "sha256": "2ECADCE9C395AE22203B6E085A4D2A53B08F70D8E7BB3F13120C981138289E0C"
+      "sha256": "AC4ED9B2A0DE8BA4DBB0BD1A9D55031B28186A072E064E8F21DB650631F784C0",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\contacts.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\node.go",
-      "sha256": "F3BE3AC1A16ABE5F60EA7F9D30D74E571BD9BBC63B527B407815F69E83070F7B"
+      "sha256": "94C3168CA88E434D2F99DFB2D88D44A29A40C758C8D3EFE75FA9398EE9C0D2F9",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\handlers_tunnel.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\relay_stats_test.go",
-      "sha256": "F917340DFA56B732F5A18CDEA143FB922C7A211431E72631AA63E7A73C22A265"
+      "sha256": "2BA19097C68D4A1AC33D5F5EBF10EB9A032EECD9B61913EF2FED85D3EC6BFBB5",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\lru_test.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\relay_stats.go",
-      "sha256": "39FC7261C77A838C2C7927A5C4088B69DAA34861AD46263F1F438FA09D3BBEB6"
+      "sha256": "D9F82C1954A9ECEB6BB4342C3189C24FEC311311C6DA52C211020014DE14C5BB",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\metrics.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\sequence.go",
-      "sha256": "723FD1AB027144F3C0E4C9CDF90AA658EB8DE3B5AA5E9706E08E31CD3166B908"
+      "sha256": "6F284B82B43FB08EFF048ECD9F8675E0B62ADB59DFAA888C2A1219E97901F3B2",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\node.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\tunnel_negative_test.go",
-      "sha256": "B616EB88D567B411E02A67D4F40581D51E47C481C5DC1CF1D8D5DDA5887BC58A"
+      "sha256": "D401037B997B67FCBF34C0BF12AC53F2C54053D89B52C96CAB5C9AEEF6319ADE",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\relay_stats_test.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\tunnel.go",
-      "sha256": "747AC804EAC46F9730E155DBC5B34D29857178D811277D57907D97A120F20CCC"
+      "sha256": "CF1A67B380A697DBB3DB38DEF56C617770448AB0AE8E7B13C81C4E66192F5826",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\relay_stats.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\nodeid\\nodeid.go",
-      "sha256": "FBD2F63B4D3834DCEE14E22D0FA751234EB817AAB52FF5829AECDF25392291D7"
+      "sha256": "193FC4DF99C2A2FE1A65BF8AABB4F41150C455E4628BDCCF80D14FAD1D668280",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\replication.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\decoder.go",
-      "sha256": "13B6474889F9B693E46E2B18CCCA2BD72300CC522A4D1A2D3A96C781667AD864"
+      "sha256": "E30C6DA9710E9AA14A3BF3CF81D23CDA0A3F7DCC66D1C43FD88DF21CEC9EA7F3",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\sequence.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\frame.go",
-      "sha256": "CA61C54A255DEE324802BDB364BFE370BB6CC27170EDE2B3112BA3D72FED9296"
+      "sha256": "B616EB88D567B411E02A67D4F40581D51E47C481C5DC1CF1D8D5DDA5887BC58A",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\tunnel_negative_test.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\serialization\\codec.go",
-      "sha256": "69DD845186C835BF0485AAEA85ED9194159D03564BE6861EA5DCC9AC300E26B2"
+      "sha256": "C8A196AD984A9CD7A072C3436CA286215D327BA39DAD09C6B866A679166CFACA",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\tunnel.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\serialization\\json.go",
-      "sha256": "DBA6B6C03A55411DB2CD129EDC888D5DD6CD9A9715E494A6999F1D5F0DDA1923"
+      "sha256": "FBD2F63B4D3834DCEE14E22D0FA751234EB817AAB52FF5829AECDF25392291D7",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\nodeid\\nodeid.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\serialization\\msgpack.go",
-      "sha256": "18AC2A5A03A23BB7A8CFD00E9565396799C0A0887A55A251650047714CA3CDA4"
+      "sha256": "13B6474889F9B693E46E2B18CCCA2BD72300CC522A4D1A2D3A96C781667AD864",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\decoder.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\records\\record.go",
-      "sha256": "20F283E43289E88DF6E5E9A06DC985A6A0D8635ADB2015BEA4FA4960498DEA0C"
+      "sha256": "CA61C54A255DEE324802BDB364BFE370BB6CC27170EDE2B3112BA3D72FED9296",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\frame.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\records\\store.go",
-      "sha256": "E264EFF598E86809AFE09CA26811A01E336F7C654E2DA82D4601B7F39533B764"
+      "sha256": "69DD845186C835BF0485AAEA85ED9194159D03564BE6861EA5DCC9AC300E26B2",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\serialization\\codec.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\conn.go",
-      "sha256": "13D8218719AA11CA8B4966C9D97F3248B2CD75674CAD155216BF6CA5BE14D4DD"
+      "sha256": "DBA6B6C03A55411DB2CD129EDC888D5DD6CD9A9715E494A6999F1D5F0DDA1923",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\serialization\\json.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\manager.go",
-      "sha256": "701CCD770FC4D8FD801D623E29787F2148D891CEA0729FBC4A00955F43370C20"
+      "sha256": "18AC2A5A03A23BB7A8CFD00E9565396799C0A0887A55A251650047714CA3CDA4",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\protocol\\serialization\\msgpack.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\messages.go",
-      "sha256": "86C0AB6547CDD4E2E92423EAD65FD2BA511DF163F4698A91EEC0ED90731F27DD"
+      "sha256": "20F283E43289E88DF6E5E9A06DC985A6A0D8635ADB2015BEA4FA4960498DEA0C",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\records\\record.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\tunnel_messages.go",
-      "sha256": "0D1F96D199C1ABA0013D0568A8E93D053897B0277EC33D2337E7B5A5721AD632"
+      "sha256": "AD54788226A0D8559B222BC31573CB191A9CD2DBE3466D95B52E2AB99C4DD70C",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\records\\store.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\transport\\tcp.go",
-      "sha256": "F3D3F44153F152125087A2FE53CEC922987F5CD8367C34A2D9B3F020553F45DD"
+      "sha256": "13D8218719AA11CA8B4966C9D97F3248B2CD75674CAD155216BF6CA5BE14D4DD",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\conn.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\tunnel\\crypto.go",
-      "sha256": "33F77CFE57410145041A1A2EDC97E87C706B3CC23F85C35BA8E44BA02CCF3CA2"
+      "sha256": "F7BA88D591973166D0E683AE581B1143C25FF9ED7D216594C8F292550D42E7C0",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\manager.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\tunnel\\manager.go",
-      "sha256": "F0667EE06E3DA5E5B04A5A3C4168169D7F8AB16DC14042206716B82376717F15"
+      "sha256": "86C0AB6547CDD4E2E92423EAD65FD2BA511DF163F4698A91EEC0ED90731F27DD",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\messages.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\tunnel\\types.go",
-      "sha256": "0381E077EAB57392C2DA64BD613455C5117458DE96D1356061C299F616777ADC"
+      "sha256": "EE8E9C76DE93C77361601DE7DB2384010AD00F8CE04F228095301BDF4BC13061",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\trust_contract_test.go"
     },
     {
-      "path": "C:\\dev\\projects\\p2p-overlay\\cmd\\node\\main.go",
-      "sha256": "54D69214F9B899B06A048DF2043B872168A7060477180BB2CD427118BF19C834"
+      "sha256": "8F2A8F2DE15E163306D3F2E695262F25CFBFEB5A70DF1B4C97CC511FF8E3F1E1",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\tunnel_messages.go"
+    },
+    {
+      "sha256": "F3D3F44153F152125087A2FE53CEC922987F5CD8367C34A2D9B3F020553F45DD",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\transport\\tcp.go"
+    },
+    {
+      "sha256": "33F77CFE57410145041A1A2EDC97E87C706B3CC23F85C35BA8E44BA02CCF3CA2",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\tunnel\\crypto.go"
+    },
+    {
+      "sha256": "F0667EE06E3DA5E5B04A5A3C4168169D7F8AB16DC14042206716B82376717F15",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\tunnel\\manager.go"
+    },
+    {
+      "sha256": "0381E077EAB57392C2DA64BD613455C5117458DE96D1356061C299F616777ADC",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\tunnel\\types.go"
+    },
+    {
+      "sha256": "54D69214F9B899B06A048DF2043B872168A7060477180BB2CD427118BF19C834",
+      "path": "C:\\dev\\projects\\p2p-overlay\\cmd\\node\\main.go"
     }
   ],
-  "netem_delay_ms": 80,
-  "started_utc": "2026-11-17T19:09:35.2177891Z",
-  "K": 4,
   "R": 3,
-  "image": "sha256:eece0f12c9244477c54d4810416697f640486a3dac5f8dc6ac2feabf2fe39396",
+  "K": 4,
+  "netem_loss_percent": 2,
   "ALPHA": 3,
-  "N": 7,
-  "netem_loss_percent": 2
+  "netem_delay_ms": 80,
+  "image": "sha256:9fa4020ffce587a19382864302fe99d1b658f5d00f147c42caedb85c9ab6aee7",
+  "N": 7
 }

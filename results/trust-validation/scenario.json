@@ -1,0 +1,3766 @@
+{
+  "Replication": {
+    "lookup_id": "82151e184ef3d5c805f1c65de19524fa",
+    "candidate_ids": [
+      "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+      "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+      "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+      "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+      "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+      "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+      "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+      "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+      "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+      "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+      "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+      "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+      "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+    ],
+    "probes": [
+      {
+        "node_id": "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "address": "127.0.0.1:52184",
+        "available": true
+      },
+      {
+        "node_id": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "address": "127.0.0.1:52174",
+        "available": true
+      },
+      {
+        "node_id": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "address": "127.0.0.1:52172",
+        "available": true
+      }
+    ],
+    "key": "f2b623ef10f32947b06aad89ad4c5ea085a90021fb0e85c6372b8f638dae9fe9",
+    "owner": "88e2caf04c11289d4cec729545fcce6131380867edd525fc5194605d413c73c0",
+    "local_copy": {
+      "node_id": "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+      "address": "127.0.0.1:52173",
+      "acknowledged": true
+    },
+    "holders": [
+      {
+        "node_id": "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "address": "127.0.0.1:52184",
+        "acknowledged": true
+      },
+      {
+        "node_id": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "address": "127.0.0.1:52174",
+        "acknowledged": true
+      },
+      {
+        "node_id": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "address": "127.0.0.1:52172",
+        "acknowledged": true
+      }
+    ],
+    "confirmations": 3
+  },
+  "StoppedCandidate": "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+  "CandidateStoppedAt": "2026-11-19T18:28:21.9273705+03:00",
+  "CandidateFailure": true,
+  "CandidateTrace": {
+    "lookup_id": "fbcc2b168551c197b6dde86e8abbeed3",
+    "initiator": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+    "kind": "node",
+    "target": [
+      120,
+      57,
+      84,
+      226,
+      157,
+      216,
+      240,
+      62,
+      184,
+      53,
+      39,
+      222,
+      89,
+      246,
+      183,
+      240,
+      62,
+      181,
+      194,
+      142,
+      239,
+      47,
+      100,
+      247,
+      178,
+      209,
+      61,
+      126,
+      64,
+      74,
+      146,
+      243
+    ],
+    "initial_closest": [
+      "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+      "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+      "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+      "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+      "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+      "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+      "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+      "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+    ],
+    "closest": [
+      "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+      "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+      "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+    ],
+    "rpcs": 13,
+    "iterations": 5,
+    "timeouts": 0,
+    "errors": 1,
+    "trace": [
+      {
+        "index": 0,
+        "queried": [
+          "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+          "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+          "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+        ],
+        "replies": 2,
+        "errors": 1,
+        "timeouts": 0
+      },
+      {
+        "index": 1,
+        "queried": [
+          "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+          "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+          "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+        ],
+        "replies": 3,
+        "errors": 0,
+        "timeouts": 0
+      },
+      {
+        "index": 2,
+        "queried": [
+          "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+          "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+          "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+        ],
+        "replies": 3,
+        "errors": 0,
+        "timeouts": 0
+      },
+      {
+        "index": 3,
+        "queried": [
+          "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+          "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+          "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+        ],
+        "replies": 3,
+        "errors": 0,
+        "timeouts": 0
+      },
+      {
+        "index": 4,
+        "queried": [
+          "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+        ],
+        "replies": 1,
+        "errors": 0,
+        "timeouts": 0
+      }
+    ],
+    "started": "2026-11-19T18:28:21.922644+03:00",
+    "finished": "2026-11-19T18:28:21.9284088+03:00",
+    "duration_ms": 5
+  },
+  "N": 15,
+  "K": 3,
+  "Scheme": "star",
+  "Repetition": 0,
+  "Started": "2026-11-19T18:28:15.6962995+03:00",
+  "ConvergenceMS": 6175,
+  "Rounds": [
+    {
+      "At": "2026-11-19T18:28:15.7552199+03:00",
+      "Success": 0,
+      "Total": 15,
+      "Contacts": 0
+    },
+    {
+      "At": "2026-11-19T18:28:17.7556732+03:00",
+      "Success": 15,
+      "Total": 15,
+      "Contacts": 128
+    },
+    {
+      "At": "2026-11-19T18:28:19.8257919+03:00",
+      "Success": 15,
+      "Total": 15,
+      "Contacts": 132
+    },
+    {
+      "At": "2026-11-19T18:28:21.8529478+03:00",
+      "Success": 15,
+      "Total": 15,
+      "Contacts": 132
+    }
+  ],
+  "Lookups": [
+    {
+      "lookup_id": "eb02a8f424b7f44bc76fb94a3b006985",
+      "initiator": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+      "kind": "node",
+      "target": [
+        120,
+        57,
+        84,
+        226,
+        157,
+        216,
+        240,
+        62,
+        184,
+        53,
+        39,
+        222,
+        89,
+        246,
+        183,
+        240,
+        62,
+        181,
+        194,
+        142,
+        239,
+        47,
+        100,
+        247,
+        178,
+        209,
+        61,
+        126,
+        64,
+        74,
+        146,
+        243
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "closest": [
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+      ],
+      "rpcs": 13,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8723318+03:00",
+      "finished": "2026-11-19T18:28:21.8736226+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "ced79c54f92b758b5f07ba3e5b379884",
+      "initiator": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+      "kind": "node",
+      "target": [
+        91,
+        169,
+        76,
+        112,
+        237,
+        27,
+        104,
+        101,
+        131,
+        96,
+        93,
+        84,
+        164,
+        143,
+        185,
+        200,
+        93,
+        22,
+        167,
+        249,
+        31,
+        101,
+        247,
+        185,
+        70,
+        83,
+        29,
+        121,
+        225,
+        180,
+        22,
+        46
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+      ],
+      "closest": [
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "rpcs": 13,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8736226+03:00",
+      "finished": "2026-11-19T18:28:21.874672+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "54d78c36c31f7cc30f1f118239ddf258",
+      "initiator": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+      "kind": "node",
+      "target": [
+        100,
+        255,
+        147,
+        23,
+        245,
+        63,
+        30,
+        179,
+        254,
+        31,
+        45,
+        211,
+        205,
+        43,
+        12,
+        85,
+        64,
+        238,
+        46,
+        65,
+        58,
+        79,
+        160,
+        10,
+        23,
+        159,
+        191,
+        174,
+        150,
+        254,
+        126,
+        113
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+      ],
+      "closest": [
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "rpcs": 12,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.874672+03:00",
+      "finished": "2026-11-19T18:28:21.8757451+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "ef3a01fcfef6296cf89c6d84f93eb326",
+      "initiator": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+      "kind": "node",
+      "target": [
+        123,
+        35,
+        224,
+        95,
+        54,
+        22,
+        133,
+        82,
+        38,
+        109,
+        225,
+        212,
+        16,
+        6,
+        184,
+        198,
+        108,
+        54,
+        206,
+        173,
+        68,
+        25,
+        58,
+        65,
+        91,
+        139,
+        3,
+        155,
+        220,
+        239,
+        252,
+        215
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+      ],
+      "closest": [
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+      ],
+      "rpcs": 13,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8757451+03:00",
+      "finished": "2026-11-19T18:28:21.8767987+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "84280ba027347d12748f5e72f7797cbf",
+      "initiator": "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+      "kind": "node",
+      "target": [
+        51,
+        100,
+        128,
+        96,
+        245,
+        178,
+        10,
+        125,
+        232,
+        123,
+        0,
+        206,
+        174,
+        119,
+        22,
+        195,
+        33,
+        201,
+        101,
+        220,
+        253,
+        56,
+        254,
+        211,
+        184,
+        228,
+        126,
+        221,
+        136,
+        136,
+        89,
+        211
+      ],
+      "initial_closest": [
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+      ],
+      "closest": [
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+      ],
+      "rpcs": 13,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8767987+03:00",
+      "finished": "2026-11-19T18:28:21.8783538+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "feaee1cdf8557f84909306b3f7b3fd38",
+      "initiator": "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+      "kind": "node",
+      "target": [
+        142,
+        2,
+        198,
+        50,
+        113,
+        161,
+        22,
+        46,
+        103,
+        191,
+        69,
+        254,
+        42,
+        43,
+        130,
+        67,
+        100,
+        127,
+        205,
+        147,
+        107,
+        182,
+        176,
+        207,
+        64,
+        45,
+        29,
+        166,
+        61,
+        22,
+        143,
+        116
+      ],
+      "initial_closest": [
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8783538+03:00",
+      "finished": "2026-11-19T18:28:21.8797074+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "1ff85a116057a5c7d0a3eb9c24ead79b",
+      "initiator": "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+      "kind": "node",
+      "target": [
+        136,
+        133,
+        185,
+        100,
+        138,
+        227,
+        67,
+        102,
+        212,
+        79,
+        89,
+        120,
+        17,
+        100,
+        183,
+        204,
+        246,
+        60,
+        49,
+        117,
+        199,
+        31,
+        138,
+        153,
+        231,
+        6,
+        191,
+        171,
+        108,
+        170,
+        193,
+        154
+      ],
+      "initial_closest": [
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8797074+03:00",
+      "finished": "2026-11-19T18:28:21.8812552+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "bcc3fba4a6325968aae1f0cff1e77743",
+      "initiator": "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+      "kind": "node",
+      "target": [
+        237,
+        17,
+        94,
+        44,
+        41,
+        135,
+        190,
+        107,
+        6,
+        83,
+        0,
+        7,
+        111,
+        215,
+        197,
+        7,
+        63,
+        192,
+        161,
+        39,
+        168,
+        93,
+        1,
+        130,
+        117,
+        24,
+        56,
+        223,
+        162,
+        58,
+        141,
+        181
+      ],
+      "initial_closest": [
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+      ],
+      "closest": [
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8812552+03:00",
+      "finished": "2026-11-19T18:28:21.8823226+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "6cae9b8bc44508b5c5bc28698b018f60",
+      "initiator": "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+      "kind": "node",
+      "target": [
+        140,
+        0,
+        38,
+        128,
+        146,
+        202,
+        187,
+        80,
+        96,
+        25,
+        19,
+        126,
+        97,
+        25,
+        6,
+        231,
+        195,
+        172,
+        43,
+        14,
+        73,
+        109,
+        178,
+        43,
+        211,
+        144,
+        99,
+        151,
+        87,
+        92,
+        200,
+        15
+      ],
+      "initial_closest": [
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8823226+03:00",
+      "finished": "2026-11-19T18:28:21.8833588+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "60791135a7d5f9b941295bef9d4d5b58",
+      "initiator": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "kind": "node",
+      "target": [
+        7,
+        163,
+        117,
+        152,
+        76,
+        206,
+        41,
+        212,
+        18,
+        71,
+        165,
+        202,
+        149,
+        64,
+        166,
+        26,
+        241,
+        215,
+        72,
+        129,
+        175,
+        29,
+        127,
+        63,
+        237,
+        138,
+        195,
+        151,
+        136,
+        140,
+        244,
+        47
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+      ],
+      "closest": [
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+      ],
+      "rpcs": 11,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8833588+03:00",
+      "finished": "2026-11-19T18:28:21.8862081+03:00",
+      "duration_ms": 2
+    },
+    {
+      "lookup_id": "1d75a975e349e1a66749cc4694737140",
+      "initiator": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "kind": "node",
+      "target": [
+        91,
+        169,
+        76,
+        112,
+        237,
+        27,
+        104,
+        101,
+        131,
+        96,
+        93,
+        84,
+        164,
+        143,
+        185,
+        200,
+        93,
+        22,
+        167,
+        249,
+        31,
+        101,
+        247,
+        185,
+        70,
+        83,
+        29,
+        121,
+        225,
+        180,
+        22,
+        46
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "closest": [
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "rpcs": 11,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8862081+03:00",
+      "finished": "2026-11-19T18:28:21.8872804+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "381feeaa96af43c9ebc5c90223fbe8de",
+      "initiator": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "kind": "node",
+      "target": [
+        2,
+        65,
+        0,
+        70,
+        48,
+        51,
+        7,
+        1,
+        211,
+        208,
+        0,
+        78,
+        187,
+        159,
+        230,
+        74,
+        30,
+        9,
+        9,
+        134,
+        196,
+        64,
+        38,
+        234,
+        217,
+        8,
+        160,
+        142,
+        177,
+        90,
+        130,
+        132
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+      ],
+      "closest": [
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+      ],
+      "rpcs": 11,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8872804+03:00",
+      "finished": "2026-11-19T18:28:21.8888437+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "fd4a85fbda8d2db6ec015fc04c618382",
+      "initiator": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "kind": "node",
+      "target": [
+        100,
+        255,
+        147,
+        23,
+        245,
+        63,
+        30,
+        179,
+        254,
+        31,
+        45,
+        211,
+        205,
+        43,
+        12,
+        85,
+        64,
+        238,
+        46,
+        65,
+        58,
+        79,
+        160,
+        10,
+        23,
+        159,
+        191,
+        174,
+        150,
+        254,
+        126,
+        113
+      ],
+      "initial_closest": [
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+      ],
+      "closest": [
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "rpcs": 10,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8888437+03:00",
+      "finished": "2026-11-19T18:28:21.8893667+03:00",
+      "duration_ms": 0
+    },
+    {
+      "lookup_id": "2f9e9c7d4f518deeb9264c8f9bc83ece",
+      "initiator": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "kind": "node",
+      "target": [
+        136,
+        133,
+        185,
+        100,
+        138,
+        227,
+        67,
+        102,
+        212,
+        79,
+        89,
+        120,
+        17,
+        100,
+        183,
+        204,
+        246,
+        60,
+        49,
+        117,
+        199,
+        31,
+        138,
+        153,
+        231,
+        6,
+        191,
+        171,
+        108,
+        170,
+        193,
+        154
+      ],
+      "initial_closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "rpcs": 9,
+      "iterations": 3,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8893667+03:00",
+      "finished": "2026-11-19T18:28:21.8904069+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "78238a73e5e1330d2f11ef9f822ddb20",
+      "initiator": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "kind": "node",
+      "target": [
+        51,
+        100,
+        128,
+        96,
+        245,
+        178,
+        10,
+        125,
+        232,
+        123,
+        0,
+        206,
+        174,
+        119,
+        22,
+        195,
+        33,
+        201,
+        101,
+        220,
+        253,
+        56,
+        254,
+        211,
+        184,
+        228,
+        126,
+        221,
+        136,
+        136,
+        89,
+        211
+      ],
+      "initial_closest": [
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+      ],
+      "closest": [
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+      ],
+      "rpcs": 11,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8904069+03:00",
+      "finished": "2026-11-19T18:28:21.8914795+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "a437aaf76cdef86ae2ffbc8ef4b2ac84",
+      "initiator": "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+      "kind": "node",
+      "target": [
+        140,
+        0,
+        38,
+        128,
+        146,
+        202,
+        187,
+        80,
+        96,
+        25,
+        19,
+        126,
+        97,
+        25,
+        6,
+        231,
+        195,
+        172,
+        43,
+        14,
+        73,
+        109,
+        178,
+        43,
+        211,
+        144,
+        99,
+        151,
+        87,
+        92,
+        200,
+        15
+      ],
+      "initial_closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+      ],
+      "rpcs": 9,
+      "iterations": 3,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8914795+03:00",
+      "finished": "2026-11-19T18:28:21.891999+03:00",
+      "duration_ms": 0
+    },
+    {
+      "lookup_id": "2d239b56323367fd53671ad829b6ac69",
+      "initiator": "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+      "kind": "node",
+      "target": [
+        120,
+        57,
+        84,
+        226,
+        157,
+        216,
+        240,
+        62,
+        184,
+        53,
+        39,
+        222,
+        89,
+        246,
+        183,
+        240,
+        62,
+        181,
+        194,
+        142,
+        239,
+        47,
+        100,
+        247,
+        178,
+        209,
+        61,
+        126,
+        64,
+        74,
+        146,
+        243
+      ],
+      "initial_closest": [
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "closest": [
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+      ],
+      "rpcs": 10,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.891999+03:00",
+      "finished": "2026-11-19T18:28:21.8930288+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "2ab3f521d933ca20dae7cdd7f1ff54d1",
+      "initiator": "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+      "kind": "node",
+      "target": [
+        191,
+        187,
+        157,
+        164,
+        222,
+        81,
+        221,
+        118,
+        171,
+        243,
+        103,
+        210,
+        225,
+        78,
+        254,
+        207,
+        88,
+        62,
+        147,
+        218,
+        192,
+        10,
+        99,
+        57,
+        155,
+        32,
+        10,
+        108,
+        66,
+        204,
+        87,
+        4
+      ],
+      "initial_closest": [
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+      ],
+      "closest": [
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+      ],
+      "rpcs": 12,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8930288+03:00",
+      "finished": "2026-11-19T18:28:21.8967508+03:00",
+      "duration_ms": 3
+    },
+    {
+      "lookup_id": "e4254e6054476c68dcab18064b56e83f",
+      "initiator": "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+      "kind": "node",
+      "target": [
+        91,
+        169,
+        76,
+        112,
+        237,
+        27,
+        104,
+        101,
+        131,
+        96,
+        93,
+        84,
+        164,
+        143,
+        185,
+        200,
+        93,
+        22,
+        167,
+        249,
+        31,
+        101,
+        247,
+        185,
+        70,
+        83,
+        29,
+        121,
+        225,
+        180,
+        22,
+        46
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "closest": [
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "rpcs": 10,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8967508+03:00",
+      "finished": "2026-11-19T18:28:21.8972705+03:00",
+      "duration_ms": 0
+    },
+    {
+      "lookup_id": "d65529a5a63542a4f4137145f6ba8587",
+      "initiator": "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+      "kind": "node",
+      "target": [
+        136,
+        133,
+        185,
+        100,
+        138,
+        227,
+        67,
+        102,
+        212,
+        79,
+        89,
+        120,
+        17,
+        100,
+        183,
+        204,
+        246,
+        60,
+        49,
+        117,
+        199,
+        31,
+        138,
+        153,
+        231,
+        6,
+        191,
+        171,
+        108,
+        170,
+        193,
+        154
+      ],
+      "initial_closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "rpcs": 11,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8978044+03:00",
+      "finished": "2026-11-19T18:28:21.8983174+03:00",
+      "duration_ms": 0
+    },
+    {
+      "lookup_id": "fe524dc284f20924f3730a187a5f64c7",
+      "initiator": "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+      "kind": "node",
+      "target": [
+        237,
+        17,
+        94,
+        44,
+        41,
+        135,
+        190,
+        107,
+        6,
+        83,
+        0,
+        7,
+        111,
+        215,
+        197,
+        7,
+        63,
+        192,
+        161,
+        39,
+        168,
+        93,
+        1,
+        130,
+        117,
+        24,
+        56,
+        223,
+        162,
+        58,
+        141,
+        181
+      ],
+      "initial_closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+      ],
+      "closest": [
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+      ],
+      "rpcs": 12,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8983174+03:00",
+      "finished": "2026-11-19T18:28:21.8993932+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "6ee17be797235716e2e3da69a7b58e55",
+      "initiator": "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+      "kind": "node",
+      "target": [
+        140,
+        0,
+        38,
+        128,
+        146,
+        202,
+        187,
+        80,
+        96,
+        25,
+        19,
+        126,
+        97,
+        25,
+        6,
+        231,
+        195,
+        172,
+        43,
+        14,
+        73,
+        109,
+        178,
+        43,
+        211,
+        144,
+        99,
+        151,
+        87,
+        92,
+        200,
+        15
+      ],
+      "initial_closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+      ],
+      "rpcs": 11,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.8993932+03:00",
+      "finished": "2026-11-19T18:28:21.9007929+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "221e6e190f663391e9e4bb957fe50558",
+      "initiator": "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+      "kind": "node",
+      "target": [
+        142,
+        2,
+        198,
+        50,
+        113,
+        161,
+        22,
+        46,
+        103,
+        191,
+        69,
+        254,
+        42,
+        43,
+        130,
+        67,
+        100,
+        127,
+        205,
+        147,
+        107,
+        182,
+        176,
+        207,
+        64,
+        45,
+        29,
+        166,
+        61,
+        22,
+        143,
+        116
+      ],
+      "initial_closest": [
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3"
+      ],
+      "closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9007929+03:00",
+      "finished": "2026-11-19T18:28:21.9023945+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "cadbb4533dc24547e759abe6bc6074aa",
+      "initiator": "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+      "kind": "node",
+      "target": [
+        136,
+        133,
+        185,
+        100,
+        138,
+        227,
+        67,
+        102,
+        212,
+        79,
+        89,
+        120,
+        17,
+        100,
+        183,
+        204,
+        246,
+        60,
+        49,
+        117,
+        199,
+        31,
+        138,
+        153,
+        231,
+        6,
+        191,
+        171,
+        108,
+        170,
+        193,
+        154
+      ],
+      "initial_closest": [
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9023945+03:00",
+      "finished": "2026-11-19T18:28:21.9034466+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "0b717e4898b009a5f2159d4949c7279e",
+      "initiator": "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+      "kind": "node",
+      "target": [
+        140,
+        0,
+        38,
+        128,
+        146,
+        202,
+        187,
+        80,
+        96,
+        25,
+        19,
+        126,
+        97,
+        25,
+        6,
+        231,
+        195,
+        172,
+        43,
+        14,
+        73,
+        109,
+        178,
+        43,
+        211,
+        144,
+        99,
+        151,
+        87,
+        92,
+        200,
+        15
+      ],
+      "initial_closest": [
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9034466+03:00",
+      "finished": "2026-11-19T18:28:21.9050159+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "e03157008f94a6f0ca4a6d19899fc188",
+      "initiator": "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+      "kind": "node",
+      "target": [
+        158,
+        240,
+        117,
+        219,
+        5,
+        35,
+        128,
+        176,
+        0,
+        203,
+        219,
+        170,
+        71,
+        138,
+        110,
+        230,
+        226,
+        114,
+        196,
+        171,
+        84,
+        236,
+        60,
+        145,
+        163,
+        205,
+        180,
+        252,
+        32,
+        154,
+        54,
+        204
+      ],
+      "initial_closest": [
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+      ],
+      "closest": [
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "rpcs": 14,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9050159+03:00",
+      "finished": "2026-11-19T18:28:21.9060614+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "4457fc7fe23d7d761c91cdc77c854dce",
+      "initiator": "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+      "kind": "node",
+      "target": [
+        120,
+        57,
+        84,
+        226,
+        157,
+        216,
+        240,
+        62,
+        184,
+        53,
+        39,
+        222,
+        89,
+        246,
+        183,
+        240,
+        62,
+        181,
+        194,
+        142,
+        239,
+        47,
+        100,
+        247,
+        178,
+        209,
+        61,
+        126,
+        64,
+        74,
+        146,
+        243
+      ],
+      "initial_closest": [
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "closest": [
+        "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+      ],
+      "rpcs": 10,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9060614+03:00",
+      "finished": "2026-11-19T18:28:21.9074729+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "df1cdc9ccd8c8ffb0de0b04166df6c2f",
+      "initiator": "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+      "kind": "node",
+      "target": [
+        191,
+        187,
+        157,
+        164,
+        222,
+        81,
+        221,
+        118,
+        171,
+        243,
+        103,
+        210,
+        225,
+        78,
+        254,
+        207,
+        88,
+        62,
+        147,
+        218,
+        192,
+        10,
+        99,
+        57,
+        155,
+        32,
+        10,
+        108,
+        66,
+        204,
+        87,
+        4
+      ],
+      "initial_closest": [
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+      ],
+      "closest": [
+        "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+      ],
+      "rpcs": 12,
+      "iterations": 5,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 4,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9074729+03:00",
+      "finished": "2026-11-19T18:28:21.9087836+03:00",
+      "duration_ms": 1
+    },
+    {
+      "lookup_id": "45defc8477438a4d0c2c478a99d22f25",
+      "initiator": "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+      "kind": "node",
+      "target": [
+        91,
+        169,
+        76,
+        112,
+        237,
+        27,
+        104,
+        101,
+        131,
+        96,
+        93,
+        84,
+        164,
+        143,
+        185,
+        200,
+        93,
+        22,
+        167,
+        249,
+        31,
+        101,
+        247,
+        185,
+        70,
+        83,
+        29,
+        121,
+        225,
+        180,
+        22,
+        46
+      ],
+      "initial_closest": [
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "closest": [
+        "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "rpcs": 10,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "5ba94c70ed1b686583605d54a48fb9c85d16a7f91f65f7b946531d79e1b4162e",
+            "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+          ],
+          "replies": 1,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9093176+03:00",
+      "finished": "2026-11-19T18:28:21.9098322+03:00",
+      "duration_ms": 0
+    },
+    {
+      "lookup_id": "312ffcdccf720edacd6b53fd253a4c91",
+      "initiator": "0241004630330701d3d0004ebb9fe64a1e090986c44026ead908a08eb15a8284",
+      "kind": "node",
+      "target": [
+        136,
+        133,
+        185,
+        100,
+        138,
+        227,
+        67,
+        102,
+        212,
+        79,
+        89,
+        120,
+        17,
+        100,
+        183,
+        204,
+        246,
+        60,
+        49,
+        117,
+        199,
+        31,
+        138,
+        153,
+        231,
+        6,
+        191,
+        171,
+        108,
+        170,
+        193,
+        154
+      ],
+      "initial_closest": [
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+        "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+        "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+        "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f",
+        "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+        "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+        "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71",
+        "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+      ],
+      "closest": [
+        "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+        "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+        "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74"
+      ],
+      "rpcs": 11,
+      "iterations": 4,
+      "timeouts": 0,
+      "errors": 0,
+      "trace": [
+        {
+          "index": 0,
+          "queried": [
+            "8e02c63271a1162e67bf45fe2a2b8243647fcd936bb6b0cf402d1da63d168f74",
+            "9ef075db052380b000cbdbaa478a6ee6e272c4ab54ec3c91a3cdb4fc209a36cc",
+            "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 1,
+          "queried": [
+            "8885b9648ae34366d44f59781164b7ccf63c3175c71f8a99e706bfab6caac19a",
+            "8c00268092cabb506019137e611906e7c3ac2b0e496db22bd3906397575cc80f",
+            "07a375984cce29d41247a5ca9540a61af1d74881af1d7f3fed8ac397888cf42f"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 2,
+          "queried": [
+            "33648060f5b20a7de87b00ceae7716c321c965dcfd38fed3b8e47edd888859d3",
+            "5085463a4f0192bb3b3b98c41d8c1fbd0416aca271433f7c87c1307e905b642c",
+            "64ff9317f53f1eb3fe1f2dd3cd2b0c5540ee2e413a4fa00a179fbfae96fe7e71"
+          ],
+          "replies": 3,
+          "errors": 0,
+          "timeouts": 0
+        },
+        {
+          "index": 3,
+          "queried": [
+            "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+            "7b23e05f36168552266de1d41006b8c66c36cead44193a415b8b039bdceffcd7"
+          ],
+          "replies": 2,
+          "errors": 0,
+          "timeouts": 0
+        }
+      ],
+      "started": "2026-11-19T18:28:21.9098322+03:00",
+      "finished": "2026-11-19T18:28:21.9108807+03:00",
+      "duration_ms": 1
+    }
+  ],
+  "FullTables": 0,
+  "Holders": [
+    "917f8c5b467df15c878437f0405c0c4647fe1de49ba669f6b0f64301a2e01c43",
+    "783954e29dd8f03eb83527de59f6b7f03eb5c28eef2f64f7b2d13d7e404a92f3",
+    "bfbb9da4de51dd76abf367d2e14efecf583e93dac00a63399b200a6c42cc5704",
+    "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5"
+  ],
+  "StoppedHolder": "ed115e2c2987be6b065300076fd7c5073fc0a127a85d0182751838dfa23a8db5",
+  "SeedLookup": true,
+  "SeedValue": true,
+  "HolderValue": true,
+  "RelayRecovery": true,
+  "RecoveryMS": 7,
+  "WarmMessageMS": [
+    0.544,
+    0.519,
+    1.065,
+    0.523,
+    0.54,
+    1.04,
+    0.527,
+    0.522,
+    0.517,
+    0.532,
+    0.518,
+    0.52,
+    0.521,
+    0.523,
+    0.517,
+    1.06,
+    0.705,
+    0.55,
+    0.521,
+    0.519,
+    0.523,
+    0.521,
+    0.517,
+    0.518,
+    0.517,
+    0.838,
+    0.568,
+    0.565,
+    0.525,
+    0.522
+  ],
+  "FirstMessageMS": 21.323,
+  "Events": [
+    {
+      "tunnel_id": [
+        132,
+        82,
+        173,
+        204,
+        198,
+        158,
+        94,
+        234,
+        36,
+        201,
+        145,
+        12,
+        142,
+        125,
+        65,
+        189
+      ],
+      "from": 0,
+      "to": 1,
+      "at": "2026-11-19T18:28:22.0386525+03:00"
+    },
+    {
+      "tunnel_id": [
+        6,
+        201,
+        94,
+        46,
+        140,
+        85,
+        252,
+        45,
+        77,
+        190,
+        136,
+        165,
+        166,
+        218,
+        115,
+        166
+      ],
+      "from": 0,
+      "to": 1,
+      "at": "2026-11-19T18:28:22.0463763+03:00"
+    },
+    {
+      "tunnel_id": [
+        132,
+        157,
+        15,
+        10,
+        42,
+        153,
+        160,
+        181,
+        10,
+        124,
+        40,
+        39,
+        191,
+        175,
+        197,
+        166
+      ],
+      "from": 0,
+      "to": 1,
+      "at": "2026-11-19T18:28:22.0511098+03:00"
+    },
+    {
+      "tunnel_id": [
+        132,
+        82,
+        173,
+        204,
+        198,
+        158,
+        94,
+        234,
+        36,
+        201,
+        145,
+        12,
+        142,
+        125,
+        65,
+        189
+      ],
+      "from": 1,
+      "to": 2,
+      "at": "2026-11-19T18:28:22.2976419+03:00"
+    },
+    {
+      "tunnel_id": [
+        132,
+        82,
+        173,
+        204,
+        198,
+        158,
+        94,
+        234,
+        36,
+        201,
+        145,
+        12,
+        142,
+        125,
+        65,
+        189
+      ],
+      "from": 2,
+      "to": 2,
+      "at": "2026-11-19T18:28:22.2976419+03:00"
+    },
+    {
+      "tunnel_id": [
+        132,
+        157,
+        15,
+        10,
+        42,
+        153,
+        160,
+        181,
+        10,
+        124,
+        40,
+        39,
+        191,
+        175,
+        197,
+        166
+      ],
+      "from": 1,
+      "to": 2,
+      "at": "2026-11-19T18:28:22.2976419+03:00"
+    },
+    {
+      "tunnel_id": [
+        6,
+        201,
+        94,
+        46,
+        140,
+        85,
+        252,
+        45,
+        77,
+        190,
+        136,
+        165,
+        166,
+        218,
+        115,
+        166
+      ],
+      "from": 1,
+      "to": 2,
+      "at": "2026-11-19T18:28:22.2981582+03:00"
+    },
+    {
+      "tunnel_id": [
+        33,
+        17,
+        13,
+        65,
+        65,
+        43,
+        125,
+        61,
+        83,
+        70,
+        198,
+        197,
+        31,
+        25,
+        203,
+        105
+      ],
+      "from": 0,
+      "to": 1,
+      "at": "2026-11-19T18:28:22.3040127+03:00"
+    }
+  ]
+}

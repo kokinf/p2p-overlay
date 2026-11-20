@@ -31,11 +31,13 @@ type Manager struct {
 	writeTimeout time.Duration
 	handler      Handler
 	tlsCert      tls.Certificate
+	admission    map[nodeid.ID]bool
 
 	mu          sync.Mutex
 	allConns    map[*conn]struct{}
 	conns       map[nodeid.ID]*conn
 	pending     map[[16]byte]chan *protocol.Frame
+	pendingPeer map[[16]byte]*conn
 	replayCache map[[16]byte]time.Time
 	sem         chan struct{}
 
@@ -68,6 +70,7 @@ func NewManagerWithWriteTimeout(id *identity.Identity, codec serialization.Codec
 		conns:        make(map[nodeid.ID]*conn),
 		allConns:     make(map[*conn]struct{}),
 		pending:      make(map[[16]byte]chan *protocol.Frame),
+		pendingPeer:  make(map[[16]byte]*conn),
 		replayCache:  make(map[[16]byte]time.Time),
 		sem:          make(chan struct{}, maxConcurrentHandlers),
 		done:         make(chan struct{}),
@@ -83,6 +86,20 @@ func (m *Manager) Serve(ctx context.Context, ln net.Listener) error {
 		Certificates: []tls.Certificate{m.tlsCert},
 		ClientAuth:   tls.RequireAnyClientCert,
 		MinVersion:   tls.VersionTLS13,
+		MaxVersion:   tls.VersionTLS13,
+		VerifyConnection: func(cs tls.ConnectionState) error {
+			if len(cs.PeerCertificates) != 1 {
+				return fmt.Errorf("one identity certificate required")
+			}
+			id, err := identity.ExtractNodeIDFromCert(cs.PeerCertificates[0])
+			if err != nil {
+				return err
+			}
+			if m.admission != nil && !m.admission[id] {
+				return fmt.Errorf("identity not admitted: %s", id)
+			}
+			return nil
+		},
 	}
 
 	tlsListener := tls.NewListener(ln, config)
@@ -191,7 +208,7 @@ func (m *Manager) readLoop(c *conn) {
 			return
 		}
 		if isResponse(f.Type) {
-			m.deliver(f)
+			m.deliver(c, f)
 			continue
 		}
 		select {
@@ -203,10 +220,12 @@ func (m *Manager) readLoop(c *conn) {
 	}
 }
 
-func (m *Manager) deliver(f *protocol.Frame) {
+func (m *Manager) deliver(c *conn, f *protocol.Frame) {
 	m.mu.Lock()
 	ch, ok := m.pending[f.RequestID]
+	ok = ok && m.pendingPeer[f.RequestID] == c
 	if ok {
+		delete(m.pendingPeer, f.RequestID)
 		delete(m.pending, f.RequestID)
 	}
 	m.mu.Unlock()
@@ -219,18 +238,10 @@ func (m *Manager) deliver(f *protocol.Frame) {
 }
 
 func (m *Manager) handleRequest(c *conn, f *protocol.Frame) {
-	m.mu.Lock()
-	if _, exists := m.replayCache[f.RequestID]; exists {
-		m.mu.Unlock()
-		log.Printf("rpc: replay detected for request_id %x from %s", f.RequestID[:4], c.remote)
+	if !m.reserveReplay(f.RequestID, time.Now()) {
+		log.Printf("rpc: replay or cache capacity rejected request_id=%x peer=%s", f.RequestID, c.remote)
 		return
 	}
-	if len(m.replayCache) >= 100000 {
-		m.mu.Unlock()
-		return
-	}
-	m.replayCache[f.RequestID] = time.Now()
-	m.mu.Unlock()
 
 	ctx, cancel := context.WithTimeout(m.ctx, m.timeout)
 	defer cancel()
@@ -266,7 +277,7 @@ func (m *Manager) cleanupReplayCache() {
 			m.mu.Lock()
 			now := time.Now()
 			for id, t := range m.replayCache {
-				if now.Sub(t) > 2*time.Minute {
+				if now.Sub(t) >= replayWindow {
 					delete(m.replayCache, id)
 				}
 			}
@@ -297,11 +308,17 @@ func (m *Manager) Call(ctx context.Context, remote nodeid.ID, addr string, req *
 	}
 	ch := make(chan *protocol.Frame, 1)
 	m.mu.Lock()
+	if _, exists := m.pending[req.RequestID]; exists {
+		m.mu.Unlock()
+		return nil, fmt.Errorf("request id already pending")
+	}
 	m.pending[req.RequestID] = ch
+	m.pendingPeer[req.RequestID] = c
 	m.mu.Unlock()
 	defer func() {
 		m.mu.Lock()
 		delete(m.pending, req.RequestID)
+		delete(m.pendingPeer, req.RequestID)
 		m.mu.Unlock()
 	}()
 	if err := c.write(req); err != nil {
@@ -313,8 +330,14 @@ func (m *Manager) Call(ctx context.Context, remote nodeid.ID, addr string, req *
 	case <-m.done:
 		return nil, fmt.Errorf("RPC manager closed")
 	case resp := <-ch:
+		if resp.Version != req.Version {
+			return nil, fmt.Errorf("unexpected response version %d", resp.Version)
+		}
 		if resp.Type == protocol.FrameError {
 			return nil, fmt.Errorf("remote error: %s", string(resp.Payload))
+		}
+		if !validResponse(req.Type, resp.Type) {
+			return nil, fmt.Errorf("unexpected response type %d for request %d", resp.Type, req.Type)
 		}
 		return resp, nil
 	}
@@ -330,6 +353,7 @@ func (m *Manager) DialUnverified(ctx context.Context, addr string) (nodeid.ID, e
 		Certificates:       []tls.Certificate{m.tlsCert},
 		InsecureSkipVerify: true,
 		MinVersion:         tls.VersionTLS13,
+		MaxVersion:         tls.VersionTLS13,
 	}
 	var d net.Dialer
 	nc, err := d.DialContext(ctx, "tcp", addr)
@@ -388,6 +412,7 @@ func (m *Manager) getOrDial(ctx context.Context, remote nodeid.ID, addr string) 
 		Certificates:       []tls.Certificate{m.tlsCert},
 		InsecureSkipVerify: true,
 		MinVersion:         tls.VersionTLS13,
+		MaxVersion:         tls.VersionTLS13,
 	}
 
 	var d net.Dialer
@@ -479,4 +504,59 @@ func newRequestID() ([16]byte, error) {
 
 func (m *Manager) SetMaxPayload(limit uint32) {
 	m.maxPayload = limit
+}
+
+func (m *Manager) Connect(ctx context.Context, remote nodeid.ID, address string) error {
+	ctx, cancel := context.WithTimeout(ctx, m.timeout)
+	defer cancel()
+	_, err := m.getOrDial(ctx, remote, address)
+	return err
+}
+
+func (m *Manager) SetAdmissionAllowlist(ids []nodeid.ID) {
+	if ids == nil {
+		m.admission = nil
+		return
+	}
+	m.admission = make(map[nodeid.ID]bool, len(ids))
+	for _, id := range ids {
+		m.admission[id] = true
+	}
+}
+
+func validResponse(request, response protocol.FrameType) bool {
+	switch request {
+	case protocol.FramePing:
+		return response == protocol.FramePong
+	case protocol.FrameFindNodeRequest:
+		return response == protocol.FrameFindNodeResponse
+	case protocol.FrameStoreRequest:
+		return response == protocol.FrameStoreResponse
+	case protocol.FrameFindValueRequest:
+		return response == protocol.FrameFindValueResponse
+	case protocol.FrameTunnelBuild:
+		return response == protocol.FrameTunnelBuildOK || response == protocol.FrameTunnelBuildFail
+	case protocol.FrameTunnelData:
+		return response == protocol.FrameTunnelAck
+	case protocol.FrameTunnelClose:
+		return response == protocol.FrameTunnelCloseOk
+	case protocol.FrameHello:
+		return response == protocol.FrameHelloOK
+	}
+	return false
+}
+
+const replayWindow = 2 * time.Minute
+
+func (m *Manager) reserveReplay(id [16]byte, now time.Time) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if seen, ok := m.replayCache[id]; ok && now.Sub(seen) < replayWindow {
+		return false
+	}
+	if _, ok := m.replayCache[id]; !ok && len(m.replayCache) >= 100000 {
+		return false
+	}
+	m.replayCache[id] = now
+	return true
 }

@@ -1,0 +1,52 @@
+{
+  "lookup_id": "c9994f2b263bfc0cfed59bf9a5364e14",
+  "candidate_ids": [
+    "186f09bae2d1558b6592b32e5dbbc58d5c3ad0ae213b5d4165ad4c21c7b95eea",
+    "1b2d4562c5deb3be7d015fd774812c06d447877c1cf2ba42f2e0041e71d7ce10",
+    "f9b5d60ad783e923f9b4c05f0c3590391fb7f0aea2d9db6bede0b04b2ae80e73",
+    "8c2f751b1b4bbe1035315e92818b6ff6e7d4c7c6bf789102b5f7ebc9f40ee0a5",
+    "bba471d48b5ab5e5174463a3dae287d49b1587baed7f936d678d870432b40b4b"
+  ],
+  "probes": [
+    {
+      "node_id": "186f09bae2d1558b6592b32e5dbbc58d5c3ad0ae213b5d4165ad4c21c7b95eea",
+      "address": "127.0.0.1:61668",
+      "available": true
+    },
+    {
+      "node_id": "1b2d4562c5deb3be7d015fd774812c06d447877c1cf2ba42f2e0041e71d7ce10",
+      "address": "127.0.0.1:61669",
+      "available": true
+    },
+    {
+      "node_id": "f9b5d60ad783e923f9b4c05f0c3590391fb7f0aea2d9db6bede0b04b2ae80e73",
+      "address": "127.0.0.1:61671",
+      "available": true
+    }
+  ],
+  "key": "4447c50f0edf7cf1e229ecb4b1cb78b0143be68a71d3fbc50973713a3ba610c8",
+  "owner": "981b9c1ce8dd04283b5357118951e66f8dc410833e211a8e335418832600ebf3",
+  "local_copy": {
+    "node_id": "981b9c1ce8dd04283b5357118951e66f8dc410833e211a8e335418832600ebf3",
+    "address": "127.0.0.1:61666",
+    "acknowledged": true
+  },
+  "holders": [
+    {
+      "node_id": "186f09bae2d1558b6592b32e5dbbc58d5c3ad0ae213b5d4165ad4c21c7b95eea",
+      "address": "127.0.0.1:61668",
+      "acknowledged": true
+    },
+    {
+      "node_id": "1b2d4562c5deb3be7d015fd774812c06d447877c1cf2ba42f2e0041e71d7ce10",
+      "address": "127.0.0.1:61669",
+      "acknowledged": true
+    },
+    {
+      "node_id": "f9b5d60ad783e923f9b4c05f0c3590391fb7f0aea2d9db6bede0b04b2ae80e73",
+      "address": "127.0.0.1:61671",
+      "acknowledged": true
+    }
+  ],
+  "confirmations": 3
+}

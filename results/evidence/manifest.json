@@ -1,26 +1,38 @@
 [
   {
     "file": "acceptance-final-suite.zip",
+    "sha256": "3e7af47348c154dd7712cc260d67b43186d67d8e1cf2fa69945ddc898259513b",
+    "bytes": 2460368,
+    "files": 606
+  },
+  {
+    "file": "acceptance-suite.zip",
     "sha256": "203542f6d1e58b3d32fc52f7ab15fbd48b322dc4ba8c2d37ab8d8ba044329fcc",
     "bytes": 2290166,
     "files": 608
   },
   {
     "file": "capture-delivery.zip",
-    "sha256": "1495a0c0aff39d2cf17d9bd2d7ea6e0ba42d1a7c9fd743334f02dd680ebda4a9",
-    "bytes": 325156,
+    "sha256": "a3d121f4114611577a28e734e04b2c6efe333d785ebb301e5d4eeee0086f901e",
+    "bytes": 325144,
     "files": 3
   },
   {
+    "file": "files-validation.zip",
+    "sha256": "f2b9f120502e52afbd68e0424b85333265ea00aaa31403d3ee77ee5a18c3ea39",
+    "bytes": 52500,
+    "files": 7
+  },
+  {
     "file": "network-lab-final.zip",
-    "sha256": "c21e333ae38fa3ed135e3b6dbe020d7df5a97e2b50a3b2d660e86a6cb8401a7b",
-    "bytes": 82348,
+    "sha256": "6d32ef7bf0afba6826333575265ae7e8f1721890e0e6742d6feab174fffbeb7a",
+    "bytes": 93756,
     "files": 82
   },
   {
-    "file": "files-validation.zip",
-    "sha256": "822d34ab7bebbf6fcd665041ad54324eae248b3e0915cf4d3912c03b0b2f106e",
-    "bytes": 30965,
-    "files": 7
+    "file": "network-lab.zip",
+    "sha256": "c21e333ae38fa3ed135e3b6dbe020d7df5a97e2b50a3b2d660e86a6cb8401a7b",
+    "bytes": 82348,
+    "files": 82
   }
 ]

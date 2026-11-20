@@ -37,3 +37,7 @@ python scripts/summarize_network_lab.py --dir results/network-lab
 New-Item -ItemType Directory -Force run | Out-Null
 python scripts/verify_pcap.py --pcap results/review-20261117/control-delivery.pcap --logs results/validation/docker-delivery.txt --output run/pcap-check.json
 ```
+
+## Уточнённые контракты доверия
+
+trust-validation/ содержит целевые тесты, полную регрессию, vet, три удалённых STORE отдельно от локальной копии и пример из полной матрицы. Все актуальные DHT/file/network архивы обновлены после изменений; manifest фиксирует Go-исходники. Выбор хранителей проверяется среди обнаруженных кандидатов. Только capture-delivery.zip остаётся историческим положительным контролем конфиденциальности. Итог — verification.json; точные гарантии — docs/TRUST_MODEL.md.

@@ -27,6 +27,8 @@ files:
 bootstrap:
   scheme: star
   peers: []
+  pins: {}
+  allow_unpinned: false
 experiment:
   enabled: false
   delay: 25s
@@ -34,3 +36,7 @@ experiment:
   interval: 1s
   output_dir: ./run/metrics/node-0
   targets: []
+
+admission:
+  mode: open
+  node_ids: []

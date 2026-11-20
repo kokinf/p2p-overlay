@@ -1,24 +1,21 @@
 {
-  "R": 3,
-  "go": "go version go1.27.1 windows/amd64",
-  "N": 0,
-  "started_utc": "2026-11-17T18:10:09.5354293Z",
-  "commit": "f027a36507ff9588aa8f40103251bee8bcfdbe0e",
-  "ALPHA": 3,
+  "started_utc": "2026-11-19T15:27:01.4191788Z",
   "repeats": 5,
-  "scheme": "all",
-  "mode": "independent logical nodes in Go integration harness",
   "sources": [
     {
-      "sha256": "EB2B55D13776F6DED5D265DBB9B4A1AAE50F01DAD9C6D3A25B44BE5B5B8E9FB9",
+      "sha256": "501385F272FA9759885833686D6AFC1026DC058A7DFE62F2196BA784C88A3BAB",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\config\\config.go"
+    },
+    {
+      "sha256": "AAC642FAFFC63547988F80D6CA92E9BEEC76A2ED17B7A15C8472B702A1BB00BB",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\config\\trust_test.go"
     },
     {
       "sha256": "EAEE2AC1ED9CA1CB8CB43A0EF27D4D349741CBD528B2FC00903E66180C019993",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\bucket.go"
     },
     {
-      "sha256": "9ECA4F167BAAD63686C69FC5BFE7A84858BBCEA24EF8E697FE7AB92FF339860F",
+      "sha256": "F0C10C99AF4B849EDD3621D76DE90503ECC2C26A5FAD7A15621EA046E9798B13",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\dht\\contact.go"
     },
     {
@@ -42,7 +39,15 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\identity\\tls.go"
     },
     {
-      "sha256": "6461AF44A526712271277C1873D70B7A57CC07AEF5AADF0791A43A7E5B24023E",
+      "sha256": "5BDFC0C76EC23C17D8F6A20AB1E5B45FC9B0BD7E41F7440F99B0A34036D0B962",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\contact_contract_test.go"
+    },
+    {
+      "sha256": "AC4ED9B2A0DE8BA4DBB0BD1A9D55031B28186A072E064E8F21DB650631F784C0",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\contacts.go"
+    },
+    {
+      "sha256": "94C3168CA88E434D2F99DFB2D88D44A29A40C758C8D3EFE75FA9398EE9C0D2F9",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\handlers_tunnel.go"
     },
     {
@@ -50,27 +55,35 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\lru_test.go"
     },
     {
-      "sha256": "2238F28B906D74384FDE0C250C8B33E17CFE11FA86F35CE930C2F4A44C610235",
+      "sha256": "D9F82C1954A9ECEB6BB4342C3189C24FEC311311C6DA52C211020014DE14C5BB",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\metrics.go"
     },
     {
-      "sha256": "84C5D8B0F9331EA0E1F980E4D8D68A003B17236201D1C54D8B2BBC43258FBF3C",
+      "sha256": "6F284B82B43FB08EFF048ECD9F8675E0B62ADB59DFAA888C2A1219E97901F3B2",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\node.go"
     },
     {
-      "sha256": "80B03CCB7E97AF41DB2658AC3240F9BEA5F712C053EC34A8E1C3A40E5D02F5ED",
+      "sha256": "D401037B997B67FCBF34C0BF12AC53F2C54053D89B52C96CAB5C9AEEF6319ADE",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\relay_stats_test.go"
+    },
+    {
+      "sha256": "CF1A67B380A697DBB3DB38DEF56C617770448AB0AE8E7B13C81C4E66192F5826",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\relay_stats.go"
     },
     {
-      "sha256": "723FD1AB027144F3C0E4C9CDF90AA658EB8DE3B5AA5E9706E08E31CD3166B908",
+      "sha256": "193FC4DF99C2A2FE1A65BF8AABB4F41150C455E4628BDCCF80D14FAD1D668280",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\replication.go"
+    },
+    {
+      "sha256": "E30C6DA9710E9AA14A3BF3CF81D23CDA0A3F7DCC66D1C43FD88DF21CEC9EA7F3",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\sequence.go"
     },
     {
-      "sha256": "CECB36B85D4357241EDDBC7A84F968020AA6EC8B4418777DA843C695D6E0329A",
+      "sha256": "B616EB88D567B411E02A67D4F40581D51E47C481C5DC1CF1D8D5DDA5887BC58A",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\tunnel_negative_test.go"
     },
     {
-      "sha256": "0C5A55776DC0D53C871A65A38F9B414386F69FE78D044E028170A23B9BC19CC4",
+      "sha256": "C8A196AD984A9CD7A072C3436CA286215D327BA39DAD09C6B866A679166CFACA",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\node\\tunnel.go"
     },
     {
@@ -102,7 +115,7 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\records\\record.go"
     },
     {
-      "sha256": "E264EFF598E86809AFE09CA26811A01E336F7C654E2DA82D4601B7F39533B764",
+      "sha256": "AD54788226A0D8559B222BC31573CB191A9CD2DBE3466D95B52E2AB99C4DD70C",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\records\\store.go"
     },
     {
@@ -110,7 +123,7 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\conn.go"
     },
     {
-      "sha256": "701CCD770FC4D8FD801D623E29787F2148D891CEA0729FBC4A00955F43370C20",
+      "sha256": "F7BA88D591973166D0E683AE581B1143C25FF9ED7D216594C8F292550D42E7C0",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\manager.go"
     },
     {
@@ -118,7 +131,11 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\messages.go"
     },
     {
-      "sha256": "0D1F96D199C1ABA0013D0568A8E93D053897B0277EC33D2337E7B5A5721AD632",
+      "sha256": "EE8E9C76DE93C77361601DE7DB2384010AD00F8CE04F228095301BDF4BC13061",
+      "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\trust_contract_test.go"
+    },
+    {
+      "sha256": "8F2A8F2DE15E163306D3F2E695262F25CFBFEB5A70DF1B4C97CC511FF8E3F1E1",
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\rpc\\tunnel_messages.go"
     },
     {
@@ -138,15 +155,15 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\internal\\tunnel\\types.go"
     },
     {
-      "sha256": "B6947929881D7A1371021063A983BEC0E59FD3B7C368EA39A10B6C6DD5EC3635",
+      "sha256": "54D69214F9B899B06A048DF2043B872168A7060477180BB2CD427118BF19C834",
       "path": "C:\\dev\\projects\\p2p-overlay\\cmd\\node\\main.go"
     },
     {
-      "sha256": "25EF584F34ABD0D14DB282DF06ACE62EF1F3D7251C317D3E9633CF8EDDBF98FE",
+      "sha256": "B86BB7F062EF3402A3AE1DD79DBF784BCBF90077FC54A9665F97CD298BDA7487",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\acceptance_test.go"
     },
     {
-      "sha256": "46F3BCD82CDFC585C5D17E337261301346716016C0BEB3C47E4227A26362540D",
+      "sha256": "09B669DA23CFF64494100E0487DE76F9E0795D47B9875571687544789B363A12",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\bootstrap_shutdown_test.go"
     },
     {
@@ -154,7 +171,7 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\decoder_test.go"
     },
     {
-      "sha256": "1196B53A98F7C1E5C8B3264F32A93BB9B26AE8FC7CBD69E44A42802E1EDCCD59",
+      "sha256": "02183949B76DB447F8B574F039DC56968C0049AED94495A5BC4604193AFEF642",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\dht_test.go"
     },
     {
@@ -162,7 +179,7 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\dhtkey_test.go"
     },
     {
-      "sha256": "D9D04E1684734CBBEA51AAD213103F99ECEB536E05AB3F314D6487ED936AF6B2",
+      "sha256": "42CC48F9E42F1D4782389822B1F2A476467FBEA0E83328E53D813A8C0BDC4C4C",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\file_test.go"
     },
     {
@@ -170,11 +187,11 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\frame_test.go"
     },
     {
-      "sha256": "A5B6DE1B3746956BC5A4C49EF46F9A8D9BE6B101EC1DE705A803832AD1247371",
+      "sha256": "6E14FF2BBB31B88E5FE4D0690065A870A45BBD35519024B497C705E4699ECD3C",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\identity_test.go"
     },
     {
-      "sha256": "420CE5960B9A98AB8B002DA0D7335768D2B50E13888B4023F4E95012E63649B0",
+      "sha256": "C1C6749BA48B6FD4F53366A3E3EF3DA16BAC7AFAA319C0C05433DEF25CD80EA3",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\lookup_test.go"
     },
     {
@@ -186,7 +203,7 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\negative_test.go"
     },
     {
-      "sha256": "4B60E5758FD819AF26ACBCDDF907112D0965DB54F4186F2BFF8BFA8E2303594E",
+      "sha256": "F555FFCC3850A50A0A7176F4D60FC6A39DB2F315B9AAC37CF567966ABD448EDD",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\rating_test.go"
     },
     {
@@ -194,11 +211,15 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\records_test.go"
     },
     {
-      "sha256": "89DB9227860185145689D0AAA8CEF715C6C276B530CC8EB463DB5739DA85444E",
+      "sha256": "B2A8C43159A453CE759695A368D1C7FC8AE754CFD8BB9292C689DF4E75E873BD",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\replay_test.go"
     },
     {
-      "sha256": "5D536F48BB820E9565D473F7BE11D623B240EA6220B0F8DE07FF92BACA177267",
+      "sha256": "9F5BC52ABBB7CACB32E1D75C564F23F1FB46DA77D245F51E09F07DE213DA8A35",
+      "path": "C:\\dev\\projects\\p2p-overlay\\tests\\replication_report_test.go"
+    },
+    {
+      "sha256": "0EEC74B7B7100EABAB70C37E90061B7D880859C2D1DE10BD98CBA2D324A86936",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\requestid_test.go"
     },
     {
@@ -206,24 +227,31 @@
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\rpc_test.go"
     },
     {
-      "sha256": "BCDD037DA109CA2614E7D6B9105CA2AD8FEF369638B47430B2748A2E459B198D",
+      "sha256": "EF49B4B76C86B343B7CF493481F91696E83D6120D0BDB1F96F45A7F41B57EE4E",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\security_test.go"
     },
     {
-      "sha256": "EBA1747630F57E5BE04E47028E2EF57AB72E650F5E9476FBF2D74788B8C22C0E",
+      "sha256": "AA0890C2A6573F603DB0BC7795F71417A0C6BE9075E5DC9701069DAC164C5089",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\serialization_test.go"
     },
     {
-      "sha256": "F54D0DCCF06A8B7F53009AB13BB618EC9E9E1646686247F52213E2F46CD3495F",
+      "sha256": "954E94522829E211AF896A9BDE97CDFDE686FE7DB7A58C584A045F7FBDA4DB6F",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\storage_test.go"
     },
     {
-      "sha256": "CA7A65AF6C1F337D6E231877DAEDEE80A1D3F5C4D230BE43BECF54B138494692",
+      "sha256": "45CE0D0832DC45407AAB125B5362BF6961D52034FDFF03392D61896C9D251504",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\tunnel_test.go"
     },
     {
       "sha256": "ACFDB3AC47036C39D59BBBBFE7E6B30768B910FAC452235052907D8702FA8A81",
       "path": "C:\\dev\\projects\\p2p-overlay\\tests\\version_test.go"
     }
-  ]
+  ],
+  "ALPHA": 3,
+  "go": "go version go1.27.1 windows/amd64",
+  "scheme": "all",
+  "commit": "579a6fc03452a95d02ca02363aa05046c684dfe6",
+  "mode": "independent logical nodes in Go integration harness",
+  "R": 3,
+  "N": 0
 }

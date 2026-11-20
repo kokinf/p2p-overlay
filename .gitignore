@@ -30,7 +30,7 @@ compose-capture.yaml
 compose-experiment.yaml
 __pycache__/
 
-]downloads/
+downloads/
 
 /results/*
 !/results/README.md
@@ -55,3 +55,7 @@ __pycache__/
 
 **/identity.key
 **/record-sequence
+
+!/results/trust-validation/
+
+!/results/verification.json

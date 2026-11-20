@@ -14,13 +14,13 @@ import (
 	"p2p-overlay/internal/records"
 	"p2p-overlay/internal/rpc"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"testing"
 	"time"
 )
 
 type acceptanceRun struct {
+	Replication        *node.ReplicationReport
 	StoppedCandidate   string
 	CandidateStoppedAt time.Time
 	CandidateFailure   bool
@@ -132,9 +132,24 @@ func TestAcceptanceMatrix(t *testing.T) {
 						}
 					}
 				}
+				stateDirs := make([]string, c.n)
+				identities := make([]*identity.Identity, c.n)
 				for i := range nodes {
+					stateDirs[i] = t.TempDir()
+					var err error
+					identities[i], err = identity.LoadOrCreate(stateDirs[i])
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+				for i := range nodes {
+					pins := make(map[string]string)
 					var peers []string
-					add := func(j int) { peers = append(peers, fmt.Sprintf("127.0.0.1:%d", ports[j])) }
+					add := func(j int) {
+						addr := fmt.Sprintf("127.0.0.1:%d", ports[j])
+						peers = append(peers, addr)
+						pins[addr] = identities[j].NodeID().String()
+					}
 					switch c.scheme {
 					case "star":
 						if i > 0 {
@@ -157,7 +172,7 @@ func TestAcceptanceMatrix(t *testing.T) {
 							}
 						}
 					}
-					cfg := &config.Config{Node: config.NodeConfig{Port: ports[i], StateDir: t.TempDir(), ReadTimeout: 5 * time.Second, WriteTimeout: 5 * time.Second}, Protocol: config.ProtocolConfig{Codec: "msgpack"}, DHT: config.DHTConfig{K: c.k, Alpha: 3, Replication: 3, TTLSeconds: 180, RefreshInterval: 2 * time.Second, RepublishInterval: 60 * time.Second}, Tunnel: config.TunnelConfig{Relays: 3, PoolSize: 3}, Bootstrap: config.BootstrapConfig{Scheme: c.scheme, Peers: peers}}
+					cfg := &config.Config{Node: config.NodeConfig{Port: ports[i], StateDir: stateDirs[i], ReadTimeout: 5 * time.Second, WriteTimeout: 5 * time.Second}, Protocol: config.ProtocolConfig{Codec: "msgpack"}, DHT: config.DHTConfig{K: c.k, Alpha: 3, Replication: 3, TTLSeconds: 180, RefreshInterval: 2 * time.Second, RepublishInterval: 60 * time.Second}, Tunnel: config.TunnelConfig{Relays: 3, PoolSize: 3}, Bootstrap: config.BootstrapConfig{Pins: pins, Scheme: c.scheme, Peers: peers}}
 					var err error
 					nodes[i], err = node.New(cfg)
 					if err != nil {
@@ -392,18 +407,64 @@ func TestAcceptanceMatrix(t *testing.T) {
 				rec := &records.NodeRecord{NodeID: signer.NodeID(), PublicKey: signer.PublicKey, Addresses: []string{"127.0.0.1:12345"}, Seq: 1, IssuedAt: time.Now().Unix(), ExpiresAt: time.Now().Add(180 * time.Second).Unix()}
 				rec.Sign(signer)
 				ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
-				err = nodes[1].PutRecord(ctx, rec)
+				storeReport, storeErr := nodes[1].PutRecordWithReport(ctx, rec)
+				report.Replication = &storeReport
+				err = storeErr
 				cancel()
 				if err != nil {
 					t.Fatal(err)
 				}
-				expectedHolders := append([]*node.Node(nil), nodes...)
-				sort.Slice(expectedHolders, func(i, j int) bool { return nodeid.Less(expectedHolders[i].ID, expectedHolders[j].ID, rec.DHTKey()) })
-				for _, expected := range expectedHolders[:3] {
-					if _, ok := expected.Store.Get(rec.DHTKey()); !ok {
-						t.Fatal("one of the three globally closest available holders did not store the record")
+				selected := report.Replication
+				if selected == nil || len(selected.Holders) != 3 {
+					t.Fatal("three remote holders missing")
+				}
+				candidates := make(map[string]bool)
+				var previous nodeid.ID
+				for i, raw := range selected.CandidateIDs {
+					id, err := nodeid.ParseHex(raw)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if i > 0 && nodeid.Less(id, previous, rec.DHTKey()) {
+						t.Fatal("candidate pool not XOR sorted")
+					}
+					previous = id
+					candidates[raw] = true
+				}
+				holderIndex := 0
+				for i, probe := range selected.Probes {
+					if i >= len(selected.CandidateIDs) || probe.NodeID != selected.CandidateIDs[i] {
+						t.Fatal("nearest available selection skipped an unprobed candidate")
+					}
+					if !probe.Available {
+						if probe.Error == "" {
+							t.Fatal("unavailable candidate has no diagnostic")
+						}
+						continue
+					}
+					if holderIndex >= 3 || selected.Holders[holderIndex].NodeID != probe.NodeID {
+						t.Fatal("holders do not match nearest available candidates")
+					}
+					holderIndex++
+				}
+				if holderIndex != 3 {
+					t.Fatal("insufficient verified remote holders")
+				}
+				for _, h := range selected.Holders {
+					if !candidates[h.NodeID] || h.NodeID == nodes[1].ID.String() {
+						t.Fatal("invalid remote holder")
+					}
+					stored := false
+					for _, member := range nodes {
+						if member.ID.String() == h.NodeID {
+							_, stored = member.Store.Get(rec.DHTKey())
+						}
+					}
+					if !stored {
+						t.Fatal("selected holder did not store the record")
 					}
 				}
+
 				holder := -1
 				reader := -1
 				for i, n := range nodes {

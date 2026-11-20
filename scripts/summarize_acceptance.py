@@ -6,6 +6,14 @@ def target(r):
  v=r['target'];return bytes(v).hex() if isinstance(v,list) else v
 for path in sorted(root.glob('n*-*/scenario.json')):
  d=json.loads(path.read_text());group=(d['N'],d['K'],d['Scheme']);groups.setdefault(group,[]).append(d)
+ if 'Replication' in d:
+  r=d['Replication'];holders=r['holders'];ids=[h['node_id'] for h in holders]
+  assert len(ids)==3 and len(set(ids))==3,f'{path}: three distinct remote holders required'
+  assert r['local_copy']['node_id'] not in ids and r['owner'] not in ids,f'{path}: local/owner copy counted as a remote holder'
+  if 'probes' in r:
+   assert [p['node_id'] for p in r['probes']]==r['candidate_ids'][:len(r['probes'])],f'{path}: candidate order bypassed'
+   assert [p['node_id'] for p in r['probes'] if p['available']]==ids,f'{path}: wrong nearest available selection'
+  assert r['confirmations']==sum(h['acknowledged'] for h in holders) and r['confirmations']>=2,f'{path}: remote quorum not confirmed'
  for flag in ['CandidateFailure','HolderValue','SeedLookup','SeedValue','RelayRecovery']:
   assert d.get(flag),f'{path}: {flag} failed'
  assert d['FullTables']*5<=d['N'],f'{path}: full tables'

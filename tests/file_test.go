@@ -48,6 +48,11 @@ func startTestNetwork(t *testing.T, n, basePort int) ([]*node.Node, func()) {
 			}
 			cfg.Files.Enabled = profile.Files.Enabled
 		}
+		cfg.Bootstrap.AllowUnpinned = false
+		if len(cfg.Bootstrap.Peers) > 0 {
+			cfg.Bootstrap.Pins = map[string]string{cfg.Bootstrap.Peers[0]: nodes[0].ID.String()}
+		}
+
 		nodeInst, err := node.New(cfg)
 		if err != nil {
 			t.Fatalf("node %d: %v", i, err)

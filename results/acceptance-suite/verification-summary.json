@@ -1,15 +1,13 @@
 {
   "configurations": 6,
   "independent_runs": 30,
-  "unknown_target_lookups": 900,
+  "lookup_attempts": 900,
   "successful_lookups": 900,
   "warm_messages": 900,
-  "candidate_failures_passed": 30,
-  "holder_failures_passed": 30,
-  "seed_find_node_passed": 30,
-  "seed_find_value_passed": 30,
-  "relay_recoveries_passed": 30,
-  "full_tables": 0,
-  "node_snapshots": 570,
-  "source_hash_mismatches": []
+  "remote_replication_reports": 30,
+  "failure_scenarios_passed": 30,
+  "file_transfers": 15,
+  "network_operations": 60,
+  "network_successes": 60,
+  "runtime_source_hash_mismatches": []
 }
